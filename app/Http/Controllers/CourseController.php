@@ -37,8 +37,8 @@ class CourseController extends Controller
         $newCourse->Course_category = $request->input('Course_category');
         // $newCourse->course_rate = 0;
         $newCourse->save();
-        echo $newCourse;
-        return response()->json(['status'=>'Add Course Successfully'],201);
+        // echo $newCourse;
+        return response()->json(['status'=>'Add Course Successfully','courseID'=>$newCourse->Course_ID],201);
     }
 
     public function addLesson(Request $request)
@@ -57,10 +57,10 @@ class CourseController extends Controller
     public function addChap(Request $request)
     {
         $newChap = new Chap;
-        $newChap->Chap_header = $request->input('Chap_header');
         $newChap->Course_ID = $request->input('Course_ID'); 
+        $newChap->Chap_description = $request->input('Chap_description');
         $newChap->save();
-        return response()->json(['status'=>'Add Chap Successfully'],201);
+        return response()->json(['status'=>'Add Chap Successfully','chapID'=>$newChap->Chap_ID],201);
     }
 
     public function getPendingCourses()
@@ -70,7 +70,7 @@ class CourseController extends Controller
         foreach($pendingCourses as $course){
             // echo $course->Course_ID;
             $name = User::where('User_ID','=',$course->Author_ID)->pluck('User_name');
-            $course->{'name'} = $name[0];
+            $course->{'teacherName'} = $name[0];
             // echo $lessons;
             // $list =  array('course' =>$course , 'lesson' => $lessons);
             // $lists.push($list);
@@ -85,7 +85,7 @@ class CourseController extends Controller
         $approvedCourses = Course::where('Course_approve','=','1')->get();
         foreach($approvedCourses as $course){
             $author = User::where('User_ID','=',$course->Author_ID);
-            $list =  array('course' =>$course , 'author' => (($author->get())[0]->User_name));
+            $list =  array('course' =>$course , 'teacherName' => (($author->get())[0]->User_name));
             array_push($lists,$list);
         }
         return response()->json($lists,200);
@@ -134,7 +134,7 @@ class CourseController extends Controller
     {
         $course = Course::where('Course_ID','=',$courseID)->get(['Course_ID','Course_image','Course_header','Course_price','Course_rate','Author_ID']);
         $authorName = User::where('User_ID','=',$course[0]->Author_ID)->pluck('User_name');
-        $course[0]->{'name'} = $authorName[0];
+        $course[0]->{'teacherName'} = $authorName[0];
         return $course[0];
     }
 

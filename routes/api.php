@@ -32,6 +32,7 @@ Route::get('/teacher/statistic/listCoures',[TeacherController::class,'listCoures
 Route::get('/teacher/statistic/listHistory',[TeacherController::class,'listHistory']);
 
 Route::post('/teacher/manage/addCourse',[CourseController::class,'addCourse']);
-
+Route::post('/teacher/manage/addChap',[CourseController::class,'addChap']);
+Route::post('/teacher/manage/addLesson',[CourseController::class,'addLesson']);
 
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
