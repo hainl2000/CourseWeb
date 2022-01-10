@@ -38,7 +38,7 @@ class CourseController extends Controller
         // $newCourse->course_rate = 0;
         $newCourse->save();
         echo $newCourse;
-        return response()->json(['status'=>'Add Course Successfully'],201);
+        return response()->json(['status'=>'Add Course Successfully','courseID' => $newCourse->Course_ID],201);
     }
 
     public function addLesson(Request $request)
@@ -57,10 +57,9 @@ class CourseController extends Controller
     public function addChap(Request $request)
     {
         $newChap = new Chap;
-        $newChap->Chap_header = $request->input('Chap_header');
         $newChap->Course_ID = $request->input('Course_ID'); 
         $newChap->save();
-        return response()->json(['status'=>'Add Chap Successfully'],201);
+        return response()->json(['status'=>'Add Chap Successfully','chapID' => $newChap->Chap_ID],201);
     }
 
     public function getPendingCourses()
@@ -68,13 +67,8 @@ class CourseController extends Controller
         $lists = array();
         $pendingCourses = Course::where('Course_approve','=','0')->get();
         foreach($pendingCourses as $course){
-            // echo $course->Course_ID;
             $name = User::where('User_ID','=',$course->Author_ID)->pluck('User_name');
-            $course->{'name'} = $name[0];
-            // echo $lessons;
-            // $list =  array('course' =>$course , 'lesson' => $lessons);
-            // $lists.push($list);
-            // array_push($lists,$list);
+            $course->{'teacherName'} = $name[0];
         }
         return response()->json($pendingCourses,200);
     }
@@ -85,7 +79,7 @@ class CourseController extends Controller
         $approvedCourses = Course::where('Course_approve','=','1')->get();
         foreach($approvedCourses as $course){
             $author = User::where('User_ID','=',$course->Author_ID);
-            $list =  array('course' =>$course , 'author' => (($author->get())[0]->User_name));
+            $list =  array('course' =>$course , 'teacherName' => (($author->get())[0]->User_name));
             array_push($lists,$list);
         }
         return response()->json($lists,200);
@@ -134,7 +128,7 @@ class CourseController extends Controller
     {
         $course = Course::where('Course_ID','=',$courseID)->get(['Course_ID','Course_image','Course_header','Course_price','Course_rate','Author_ID']);
         $authorName = User::where('User_ID','=',$course[0]->Author_ID)->pluck('User_name');
-        $course[0]->{'name'} = $authorName[0];
+        $course[0]->{'teacherName'} = $authorName[0];
         return $course[0];
     }
 
@@ -148,7 +142,7 @@ class CourseController extends Controller
         $total = CourseEnrollment::where('Course_ID' , '=',$courseID)->count();
         $list = array('total'=> $total);
         array_push($lists,$list);
-        $listChaps = Chap::where('Course_ID','=',$courseID)->get(['Chap_ID','Chap_header','Chap_description']);
+        $listChaps = Chap::where('Course_ID','=',$courseID)->get(['Chap_ID','Chap_description']);
         foreach($listChaps as $chap)
         {   
             // echo $chap;
@@ -238,10 +232,22 @@ class CourseController extends Controller
         $courses = Course::where('Author_ID','=',$request->input('author_ID'))->get();
         // echo 'alo' . $request->input('author_ID');
         $listCourses = Course::where('Author_ID','=',$request->input('author_ID'))->paginate(2);
-        echo json_encode($listCourses);
+        // echo json_encode($listCourses);
         $total =  $listCourses->lastPage();
         $current = $listCourses->currentPage();
         $currentList = $listCourses->items();
         return response()->json(['current' => $current ,'total' => $total ,'listCourse' => $currentList],200);
+    }
+
+    public function updateCourse(Request $request, $courseID)  
+    {   
+        // $courseID = $request->route('courseID');
+        $course = Course::where('Course_ID','=',$courseID)->update([
+            'Course_header' =>$request->input('Course_header'),
+            'Course_description' => $request->input('Course_description'),
+            'Course_price' => $request->input('Course_price'),
+            'Course_image' => $request->input('Course_image')
+        ]);
+        return response()->json(['message' => 'Update Course Succesfully'],200);
     }
 }

@@ -23,18 +23,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
 Route::post('/approveCourse',[CourseController::class,'approveCourse']);
+Route::get('/teacher/general',[TeacherController::class,'tongQuan']);
+Route::get('/teacher/statistic/newStudent',[TeacherController::class,'newStudent']);
+Route::get('/teacher/statistic/topStudents',[TeacherController::class,'topStudents']);
+Route::get('/teacher/statistic/newOrders',[TeacherController::class,'newOrders']);
+Route::get('/teacher/statistic/listStudent',[TeacherController::class,'listStudent']);
+Route::get('/teacher/statistic/listCoures',[TeacherController::class,'listCoures']);
+Route::get('/teacher/statistic/listHistory',[TeacherController::class,'listHistory']);
 
+Route::post('/teacher/manage/addCourse',[CourseController::class,'addCourse']);
+Route::post('/teacher/manage/addChap',[CourseController::class,'addChap']);
+Route::post('/teacher/manage/addLesson',[CourseController::class,'addLesson']);
 
+Route::put('/teacher/manage/updateCourse/{courseID}',[CourseController::class,'updateCourse']);
+Route::put('/teacher/manage/updateChap/{chapID}',[CourseController::class,'updateChap']);
+Route::put('/teacher/manage/updateLesson/{lessonID}',[CourseController::class,'updateLesson']);
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
-
-Route::group(['prefix' => 'teacher'], function () {
-    Route::get('/general',[TeacherController::class,'tongQuan']);
-    Route::get('/statistic/newStudent',[TeacherController::class,'newStudent']);
-    Route::get('/statistic/topStudents',[TeacherController::class,'topStudents']);
-    Route::get('/statistic/newOrders',[TeacherController::class,'newOrders']);
-    Route::get('/statistic/listStudent',[TeacherController::class,'listStudent']);
-    Route::get('/statistic/listCoures',[TeacherController::class,'listCoures']);
-    Route::get('/statistic/listHistory',[TeacherController::class,'listHistory']);
-    Route::post('/manage/addCourse',[CourseController::class,'addCourse']);
-
-});
