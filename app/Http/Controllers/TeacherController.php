@@ -17,14 +17,14 @@ class TeacherController extends Controller
         $courseTotal = User::find(3)->teacherCourse->count();
         $studentTotal = DB::select('SELECT COUNT(ce.User_ID) as total
                     FROM courseenrollment ce, course c
-                    WHERE c.Author_ID = 3
+                    WHERE c.Author_ID = 2
                     AND ce.Course_ID = c.Course_ID
                     GROUP BY c.Author_ID');
 
         $revune = DB::select(
             'SELECT SUM(p.Payment_price) as total
                     FROM courseenrollment ce, course c, paymenthistory p
-                    WHERE c.Author_ID = 3
+                    WHERE c.Author_ID = 2
                     AND ce.Course_ID = c.Course_ID
                     AND ce.Payment_ID = p.Payment_ID
                     GROUP BY c.Author_ID'
@@ -32,16 +32,16 @@ class TeacherController extends Controller
         $payTotal = DB::select(
                 'SELECT COUNT(ce.Payment_ID) as total
                 FROM courseenrollment ce, course c
-                WHERE c.Author_ID = 3
+                WHERE c.Author_ID = 2
                 AND ce.Course_ID = c.Course_ID
                 GROUP BY c.Author_ID
                 '
         );
         return response()->json(
-            ['courseTotal' => $courseTotal,
-             'studentTotal' =>   $studentTotal[0]->total,
-             'revune' => $revune[0]->total,
-             'payTotal' => $payTotal[0]->total
+            ['courseTotal' => !empty($courseTotal) ? $courseTotal : 0,
+             'studentTotal' =>  !empty($studentTotal[0]->total) ? $studentTotal[0]->total : 0,
+             'revune' => !empty($revune[0]->total) ? $revune[0]->total : 0,
+             'payTotal' => !empty($payTotal[0]->total) ? $payTotal[0]->total : 0
                 ],
             200);
     }
@@ -86,7 +86,7 @@ class TeacherController extends Controller
                 AND ce.Course_ID = c.Course_ID
                 AND ce.Payment_ID = p.Payment_ID
                 AND ce.User_ID = u.User_ID
-                GROUP BY User_ID
+                GROUP BY ce.User_ID, u.User_name
                 ORDER BY COUNT(p.Payment_ID) DESC');
 
         return response()->json([
@@ -102,7 +102,6 @@ class TeacherController extends Controller
             AND ce.Course_ID = c.Course_ID
             AND ce.Payment_ID = p.Payment_ID
             AND ce.User_ID = u.User_ID
-            GROUP BY c.Author_ID
             ORDER BY Payment_date ASC');
 
         return response()->json([
@@ -117,7 +116,7 @@ class TeacherController extends Controller
                 AND ce.Course_ID = c.Course_ID
                 AND ce.User_ID = u.User_ID
                 AND ce.Payment_ID = p.Payment_ID
-                GROUP BY c.Author_ID, u.User_ID');
+                GROUP BY c.Author_ID, u.User_ID, ce.User_ID, u.User_name, u.User_phone, u.User_account');
 
         return response()->json([
             $value[0]
