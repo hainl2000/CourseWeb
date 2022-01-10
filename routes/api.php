@@ -46,3 +46,4 @@ Route::group(['prefix' => 'teacher'], function() {
 });
 
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
+Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);

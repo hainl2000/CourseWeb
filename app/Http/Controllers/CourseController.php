@@ -140,11 +140,15 @@ class CourseController extends Controller
         $lists = array();
         $course = Course::where('Course_ID','=',$courseID)->get();
         $authorName = User::where('User_ID','=',$course[0]->Author_ID)->pluck('User_name');
-        $course[0]->{'name'} = $authorName[0];
+        $course[0]->{'teacherName'} = $authorName[0];
         array_push($lists,$course[0]);
-        $total = CourseEnrollment::where('Course_ID' , '=',$courseID)->count();
-        $list = array('total'=> $total);
-        array_push($lists,$list);
+        $totalStudent = CourseEnrollment::where('Course_ID' , '=',$courseID)->count();
+        // $list = array('totalStudent'=> $total);
+        // echo $list;
+        $courseTags = CourseTag::where('Course_ID','=',$courseID)->pluck('Tag_ID');
+        $lists[0]->{'totalStudent'} = $totalStudent;
+        // $list->{'tag'} = $courseTag;
+        array_push($lists,$courseTags);
         $listChaps = Chap::where('Course_ID','=',$courseID)->get(['Chap_ID','Chap_description']);
         foreach($listChaps as $chap)
         {   
@@ -284,4 +288,5 @@ class CourseController extends Controller
         ]);
         return response()->json(['message' => 'Update Lesson Succesfully'],200);
     }
+
 }
