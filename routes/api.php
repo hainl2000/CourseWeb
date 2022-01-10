@@ -33,6 +33,9 @@ Route::group(['prefix' => 'teacher'], function() {
     Route::get('/statistic/listCoures',[TeacherController::class,'listCoures']);
     Route::get('/statistic/listHistory',[TeacherController::class,'listHistory']);
 
+
+    Route::get('/getListUploadedCourses/{authorID}',[CourseController::class,'getListUploadedCourses']);
+
     Route::post('/manage/addCourse',[CourseController::class,'addCourse']);
     Route::post('/manage/addChap',[CourseController::class,'addChap']);
     Route::post('/manage/addLesson',[CourseController::class,'addLesson']);
