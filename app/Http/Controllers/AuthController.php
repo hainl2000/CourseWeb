@@ -56,11 +56,15 @@ class AuthController extends Controller
 
         if (Auth::attempt(['User_account' => $account, 'password' => $password])) {
             $user = Auth::user();
+            $success['token'] = $user->createToken('')->accessToken;
+            $success['name'] = $user->User_name;
             // echo $user;
             return response()->json([
-                'User_role' => $user->User_role
+                'success' => $success,
+                'message' => 'Login successfully',
             ],200);
-        } else {
+        } 
+        else {
             return response()->json(['error'],400);
         }
     }

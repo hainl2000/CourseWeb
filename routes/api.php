@@ -6,7 +6,10 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
+<<<<<<< HEAD
 
+=======
+>>>>>>> test
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,6 +52,6 @@ Route::group(['prefix' => 'teacher'], function() {
     Route::put('/manage/updateChap/{chapID}',[CourseController::class,'updateChap']);
     Route::put('/manage/updateLesson/{lessonID}',[CourseController::class,'updateLesson']);
 });
-
+Route::post('/login',[AuthController::class,'login']);
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
 Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
