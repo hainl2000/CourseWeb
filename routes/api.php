@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
 Route::post('/approveCourse',[CourseController::class,'approveCourse']);
-Route::post('/login', [AuthController::class , 'login']);
+Route::post('/login', [AuthController::class , 'login'])->middleware('checkTeacher');
 Route::get('/check', [AuthController::class , 'check']);
 
 
@@ -50,6 +50,7 @@ Route::group(['prefix' => 'teacher'], function() {
     Route::put('/manage/updateChap/{chapID}',[CourseController::class,'updateChap']);
     Route::put('/manage/updateLesson/{lessonID}',[CourseController::class,'updateLesson']);
 })->middleware('checkTeacher');
+
 Route::post('/login',[AuthController::class,'login']);
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
 Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);

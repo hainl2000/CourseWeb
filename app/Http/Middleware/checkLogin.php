@@ -16,10 +16,9 @@ class checkLogin
      */
     public function handle(Request $request, Closure $next)
     {
-
         $token = $request->input('token');
         if (!empty($token))
-            return $next($request);
+            return response()->json(['logined'],200);
         else
             return response()->json(['error'],400);
 
