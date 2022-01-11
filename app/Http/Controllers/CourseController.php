@@ -49,6 +49,7 @@ class CourseController extends Controller
         $newLesson->Lesson_description = $request->input('Lesson_description');
         // $newLesson->Lesson_uploadedAt = now();
         $newLesson->Lesson_video = $request->input('Lesson_video');
+        $newLesson->Lesson_isFree = $request->input('Lesson_isFree');
         $newLesson->Lesson_view = 0;
         $newLesson->save();
         return response()->json(['status'=>'Add Lesson Successfully'],201);
@@ -143,18 +144,18 @@ class CourseController extends Controller
         $course[0]->{'teacherName'} = $authorName[0];
         array_push($lists,$course[0]);
         $totalStudent = CourseEnrollment::where('Course_ID' , '=',$courseID)->count();
-        // $list = array('totalStudent'=> $total);
-        // echo $list;
-        $courseTags = CourseTag::where('Course_ID','=',$courseID)->pluck('Tag_ID');
         $lists[0]->{'totalStudent'} = $totalStudent;
-        // $list->{'tag'} = $courseTag;
-        array_push($lists,$courseTags);
+        $courseTags = CourseTag::where('Course_ID','=',$courseID)->pluck('Tag_ID');
+        array_insert($lists,$list[0]->Course_category,$courseTags);
+        // $lists[0]->Course_category->{'Tag'} = $courseTags;
+        // $lists[1]->{'tag'} = $courseTag;
+        // array_push($lists,$courseTags);
         $listChaps = Chap::where('Course_ID','=',$courseID)->get(['Chap_ID','Chap_description']);
         foreach($listChaps as $chap)
         {   
             // echo $chap;
             // echo $chap->Chap_ID;
-            $lesson = Lesson::where('Chap_ID','=',$chap->Chap_ID)->get(['Lesson_header','Lesson_description','Lesson_video','Lesson_view']);
+            $lesson = Lesson::where('Chap_ID','=',$chap->Chap_ID)->get(['Lesson_ID','Lesson_header','Lesson_description','Lesson_video','Lesson_view']);
             $list = array('chap' =>$chap,'lesson' => $lesson); 
             array_push($lists,$list);
         }
