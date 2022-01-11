@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
 Route::post('/approveCourse',[CourseController::class,'approveCourse']);
+Route::post('/login', [\App\Http\Controllers\AuthController::class , 'login']);
 
 
 //Router teacher manage
