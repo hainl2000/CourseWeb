@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
 Route::post('/approveCourse',[CourseController::class,'approveCourse']);
 
+
+//Router teacher manage
 Route::group(['prefix' => 'teacher'], function() {
     Route::get('/general',[TeacherController::class,'tongQuan']);
     Route::get('/statistic/newStudent',[TeacherController::class,'newStudent']);

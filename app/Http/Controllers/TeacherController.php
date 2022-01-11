@@ -82,7 +82,7 @@ class TeacherController extends Controller
     public function topStudents () {
         $value = DB::select('SELECT ce.User_ID , u.User_name username,  COUNT(p.Payment_ID) "order", SUM(p.Payment_price) price
                 FROM courseenrollment ce, course c, paymenthistory p, user u
-                WHERE c.Author_ID = 3
+                WHERE c.Author_ID = 0
                 AND ce.Course_ID = c.Course_ID
                 AND ce.Payment_ID = p.Payment_ID
                 AND ce.User_ID = u.User_ID
@@ -90,7 +90,7 @@ class TeacherController extends Controller
                 ORDER BY COUNT(p.Payment_ID) DESC');
 
         return response()->json([
-            $value[0]
+            !empty($value[0])? $value[0] : ""
         ],200);
 
     }
@@ -98,14 +98,14 @@ class TeacherController extends Controller
     public function newOrders () {
         $value = DB::select('SELECT ce.User_ID as id, u.User_name as user, Payment_date as date, (p.Payment_price) price
             FROM courseenrollment ce, course c, paymenthistory p, user u
-            WHERE c.Author_ID = 3
+            WHERE c.Author_ID = 1
             AND ce.Course_ID = c.Course_ID
             AND ce.Payment_ID = p.Payment_ID
             AND ce.User_ID = u.User_ID
             ORDER BY Payment_date ASC');
 
         return response()->json([
-            $value[0]
+            !empty($value[0])? $value[0] : ""
         ],200);
     }
 
@@ -119,7 +119,7 @@ class TeacherController extends Controller
                 GROUP BY c.Author_ID, u.User_ID, ce.User_ID, u.User_name, u.User_phone, u.User_account');
 
         return response()->json([
-            $value[0]
+            !empty($value[0])? $value[0] : ""
         ],200);
     }
 
@@ -132,7 +132,7 @@ class TeacherController extends Controller
         }
 
         return response()->json([
-            $value
+            !empty($value)? $value : ""
         ],200);
     }
 
@@ -165,7 +165,7 @@ class TeacherController extends Controller
 
 
         return response()->json([
-            $value
+            !empty($value)? $value : ""
         ],200);
     }
 }
