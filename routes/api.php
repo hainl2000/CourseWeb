@@ -49,7 +49,7 @@ Route::group(['prefix' => 'teacher'], function() {
     Route::put('/manage/updateCourse/{courseID}',[CourseController::class,'updateCourse']);
     Route::put('/manage/updateChap/{chapID}',[CourseController::class,'updateChap']);
     Route::put('/manage/updateLesson/{lessonID}',[CourseController::class,'updateLesson']);
-})->middleware('checkTeacher');
+});
 
 Route::post('/login',[AuthController::class,'login']);
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
