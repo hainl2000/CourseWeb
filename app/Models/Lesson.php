@@ -12,7 +12,7 @@ class Lesson extends Model
     protected $table = 'lesson';
     protected $primaryKey = 'lesson_ID';
     const CREATED_AT = 'Lesson_uploadedAt';
-    const UPDATED_AT = NULL;
+    const UPDATED_AT = 'Lesson_updatedAt';
     // public $timestamps = false;
-    protected $hidden = ['Lesson_createdAt','Lesson_updatedAt','Course_approve'];
+    protected $hidden = ['Lesson_uploadeddAt','Lesson_updatedAt','Lesson_approve','Lesson_isFree'];
 }
