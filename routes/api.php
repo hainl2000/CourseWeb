@@ -7,6 +7,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\checkLogin;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,4 +64,10 @@ Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'chec
 //     Route::get('/auth',[AuthController::class,'check']);
 // });
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
+
+Route::group(['prefix' => 'admin'], function() {
+    Route::get('listTeacher', [AdminController::class, 'listTeacher']);
+    Route::get('listStudent', [AdminController::class, 'listStudent']);
+    Route::get('general', [AdminController::class,'general']);
+});
 Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
