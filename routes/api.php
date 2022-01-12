@@ -53,6 +53,9 @@ Route::group(['prefix' => 'teacher'], function() {
 Route::group(['prefix' => 'admin','middleware'=>['auth:api','admin']],function(){
     Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
     Route::post('/approveCourse',[CourseController::class,'approveCourse']);
+    Route::get('/listTeacher', [AdminController::class, 'listTeacher']);
+    Route::get('/listStudent', [AdminController::class, 'listStudent']);
+    Route::get('/general', [AdminController::class,'general']);
 });
 
 Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'check']);
@@ -64,10 +67,4 @@ Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'chec
 //     Route::get('/auth',[AuthController::class,'check']);
 // });
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
-
-Route::group(['prefix' => 'admin'], function() {
-    Route::get('listTeacher', [AdminController::class, 'listTeacher']);
-    Route::get('listStudent', [AdminController::class, 'listStudent']);
-    Route::get('general', [AdminController::class,'general']);
-});
 Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
