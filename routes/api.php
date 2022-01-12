@@ -23,8 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
-Route::post('/approveCourse',[CourseController::class,'approveCourse']);
 Route::post('/login', [AuthController::class , 'login']);
 Route::get('/check', [AuthController::class , 'check']);
 
@@ -51,12 +49,18 @@ Route::group(['prefix' => 'teacher'], function() {
     Route::put('/manage/updateLesson/{lessonID}',[CourseController::class,'updateLesson']);
 });
 
-Route::post('/login',[AuthController::class,'login']);
+Route::group(['prefix' => 'admin','middleware'=>['auth:api','admin']],function(){
+    Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
+    Route::post('/approveCourse',[CourseController::class,'approveCourse']);
+});
+
+Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'check']);
 // Route::middleware('auth:api')->group(function(){
 //     Route::get('/auth',[AuthController::class,'check']);
 // });
-Route::group(['middleware'=>['auth:api','admin']],function(){
-    Route::get('/auth',[AuthController::class,'check']);
-});
+// Route::group(['middleware'=>['auth:api','admin']],function(){
+    
+//     Route::get('/auth',[AuthController::class,'check']);
+// });
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
 Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
