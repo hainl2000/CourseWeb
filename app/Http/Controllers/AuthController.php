@@ -56,7 +56,7 @@ class AuthController extends Controller
 
         if (Auth::attempt(['User_account' => $account, 'password' => $password])) {
             $user = Auth::user();
-            $success['token'] = $user->createToken('')->accessToken;
+            $success['token'] = $user->createToken('access_token')->accessToken;
             $success['name'] = $user->User_name;
             // echo $user;
             return response()->json([
@@ -71,7 +71,13 @@ class AuthController extends Controller
 
     public function check()
     {
-        $user = Auth::user();
-        return response()->json([$user]);
+        // $user = Auth::user();
+        return response()->json(['message'=>'ngua don']);
     }
+
+    // public function detailsUser()
+    // {   
+    //     $user = Auth::user();
+    //     return response()->json()
+    // }
 }
