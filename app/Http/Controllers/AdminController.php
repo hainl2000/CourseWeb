@@ -27,9 +27,7 @@ class AdminController extends Controller
 
         }
 
-        return response()->json([
-            $value
-        ],200);
+        return response()->json($value,200);
     }
 
     public function listStudent () {
@@ -49,9 +47,7 @@ class AdminController extends Controller
             $value[$i]->count = DB::table('CourseEnrollment')
                 -> where('User_ID', $value[$i]->User_ID)->count();
         }
-        return response()->json([
-            $value
-        ],200);
+        return response()->json($value,200);
     }
 
     public function general () {
