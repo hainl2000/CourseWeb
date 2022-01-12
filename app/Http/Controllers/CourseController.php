@@ -22,7 +22,7 @@ class CourseController extends Controller
         $newCourseTag->Course_ID = $request->input('Course_ID');
         $newCourseTag->Tag_ID = $request->input('Tag_ID');
         $newCourseTag->save();
-        // echo $newCourse; 
+        // echo $newCourse;
         return response()->json(['status'=>'Add Course Successfully'],201);
     }
 
@@ -49,6 +49,7 @@ class CourseController extends Controller
         $newLesson->Lesson_description = $request->input('Lesson_description');
         // $newLesson->Lesson_uploadedAt = now();
         $newLesson->Lesson_video = $request->input('Lesson_video');
+        $newLesson->Lesson_isFree = $request->input('Lesson_isFree');
         $newLesson->Lesson_view = 0;
         $newLesson->save();
         return response()->json(['status'=>'Add Lesson Successfully'],201);
@@ -57,10 +58,13 @@ class CourseController extends Controller
     public function addChap(Request $request)
     {
         $newChap = new Chap;
-        $newChap->Course_ID = $request->input('Course_ID'); 
+        $newChap->Course_ID = $request->input('Course_ID');
+        $newChap->Chap_ID = $request->input('Chap_description');
         $newChap->save();
         return response()->json(['status'=>'Add Chap Successfully','chapID' => $newChap->Chap_ID],201);
     }
+
+
 
     public function getPendingCourses()
     {
@@ -118,7 +122,7 @@ class CourseController extends Controller
         $lists = array();
         $listsBoughtCourse = CourseEnrollment::where('User_ID','=',$user_ID)->get(['Course_ID']);
         foreach($listsBoughtCourse as $course)
-        {   
+        {
             array_push($lists,self::getShortInforCourse($course->Course_ID));
         }
         return response()->json($lists,200);
@@ -133,22 +137,27 @@ class CourseController extends Controller
     }
 
     protected function getFullInforCourse($courseID)
-    {   
+    {
         $lists = array();
         $course = Course::where('Course_ID','=',$courseID)->get();
         $authorName = User::where('User_ID','=',$course[0]->Author_ID)->pluck('User_name');
-        $course[0]->{'name'} = $authorName[0];
+        $course[0]->{'teacherName'} = $authorName[0];
         array_push($lists,$course[0]);
-        $total = CourseEnrollment::where('Course_ID' , '=',$courseID)->count();
-        $list = array('total'=> $total);
-        array_push($lists,$list);
+        $totalStudent = CourseEnrollment::where('Course_ID' , '=',$courseID)->count();
+        $lists[0]->{'totalStudent'} = $totalStudent;
+        $courseTags = CourseTag::where('Course_ID','=',$courseID)->pluck('Tag_ID');
+        array_insert($lists,$lists[0]->Course_category,$courseTags);
+        // $lists[0]->Course_category->{'Tag'} = $courseTags;
+        // $lists[1]->{'tag'} = $courseTag;
+        // array_push($lists,$courseTags);
         $listChaps = Chap::where('Course_ID','=',$courseID)->get(['Chap_ID','Chap_description']);
         foreach($listChaps as $chap)
-        {   
+        {
             // echo $chap;
             // echo $chap->Chap_ID;
             $lesson = Lesson::where('Chap_ID','=',$chap->Chap_ID)->get(['Lesson_header','Lesson_description','Lesson_video','Lesson_view']);
-            $list = array('chap' =>$chap,'lesson' => $lesson); 
+            $list = array('chap' =>$chap,'lesson' => $lesson);
+
             array_push($lists,$list);
         }
         return $lists;
@@ -159,6 +168,7 @@ class CourseController extends Controller
     public function getCourseDetail(Request $request)
     {
         // echo $request;
+
         $course = self::getFullInforCourse($request->route('courseID'));
         return response()->json($course,200);
     }
@@ -200,7 +210,7 @@ class CourseController extends Controller
         $current = $listCourses->currentPage();
         $currentList = $listCourses->items();
         foreach($currentList as $course)
-        {   
+        {
             $name = User::where('User_ID','=',$course->Author_ID)->pluck('User_name');
             $course->{'name'} = $name[0];
         }
@@ -208,18 +218,18 @@ class CourseController extends Controller
     }
 
     public function getListCoursesByTag(Request $request)
-    {   
+    {
         $currentList = array();
         $lists = CourseTag::where('Tag_ID','=',$request->route('tagID'))->pluck('Course_ID');
         // echo count($lists);
         foreach($lists as $course_id)
-        {   
+        {
             $listCourses = Course::where('Course_ID','=',$course_id)->paginate(1);
             $total =  $listCourses->lastPage();
             $current = $listCourses->currentPage();
             $currentList = $listCourses->items();
             foreach($currentList as $course)
-            {   
+            {
                 $name = User::where('User_ID','=',$course->Author_ID)->pluck('User_name');
                 $course->{'name'} = $name[0];
             }
@@ -228,19 +238,29 @@ class CourseController extends Controller
     }
 
     public function getListUploadedCourses(Request $request)
-    {   
-        $courses = Course::where('Author_ID','=',$request->input('author_ID'))->get();
-        // echo 'alo' . $request->input('author_ID');
-        $listCourses = Course::where('Author_ID','=',$request->input('author_ID'))->paginate(2);
+    {
+        // $listCourses = Course::where('Author_ID','=',$request->input('Author_ID'))->paginate(2);
         // echo json_encode($listCourses);
-        $total =  $listCourses->lastPage();
-        $current = $listCourses->currentPage();
-        $currentList = $listCourses->items();
-        return response()->json(['current' => $current ,'total' => $total ,'listCourse' => $currentList],200);
+        // $total =  $listCourses->lastPage();
+        // $current = $listCourses->currentPage();
+        // $currentList = $listCourses->items();
+        // return response()->json(['current' => $current ,'total' => $total ,'listCourse' => $currentList],200);
+        // $returnList = array();
+        $authorID = $request->route('authorID');
+        // echo 'tac gia' . $authorID;
+        $listCourses = Course::where('Author_ID','=',$authorID)->get(['Course_ID','Course_header','Course_rate','Course_image']);
+        ;
+        foreach($listCourses as $course)
+        {
+            // echo 'id la '. $course->Course
+            $total = CourseEnrollment::where('Course_ID', '=',$course->Course_ID)->count();
+            $course->{'totalStudents'} = $total;
+        }
+        return response()->json(['listCourses' => $listCourses],200);
     }
 
-    public function updateCourse(Request $request, $courseID)  
-    {   
+    public function updateCourse(Request $request, $courseID)
+    {
         // $courseID = $request->route('courseID');
         $course = Course::where('Course_ID','=',$courseID)->update([
             'Course_header' =>$request->input('Course_header'),
@@ -250,4 +270,26 @@ class CourseController extends Controller
         ]);
         return response()->json(['message' => 'Update Course Succesfully'],200);
     }
+
+    public function updateChap(Request $request, $chapID)
+    {
+        // $courseID = $request->route('courseID');
+        $course = Chap::where('Chap_ID','=',$chapID)->update([
+            'Chap_description' => $request->input('Chap_description')
+        ]);
+        return response()->json(['message' => 'Update Chap Succesfully'],200);
+    }
+
+    public function updateLesson(Request $request, $lessonID)
+    {
+        // $courseID = $request->route('courseID');
+        $course = Lesson::where('Chap_ID','=',$lessonID)->update([
+            'Lesson_header' => $request->input('Lesson_header'),
+            'Lesson_description' => $request->input('Lesson_description'),
+            'Lesson_video' => $request->input('Lesson_video'),
+            'Lesson_isFree' => $request->input('Lesson_isFree')
+        ]);
+        return response()->json(['message' => 'Update Lesson Succesfully'],200);
+    }
+
 }

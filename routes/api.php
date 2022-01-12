@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AuthController;
+use App\Http\Middleware\checkLogin;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +25,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
 Route::post('/approveCourse',[CourseController::class,'approveCourse']);
+Route::post('/login', [AuthController::class , 'login']);
+Route::get('/check', [AuthController::class , 'check']);
 
 
 //Router teacher manage
@@ -35,6 +39,9 @@ Route::group(['prefix' => 'teacher'], function() {
     Route::get('/statistic/listCoures',[TeacherController::class,'listCoures']);
     Route::get('/statistic/listHistory',[TeacherController::class,'listHistory']);
 
+
+    Route::get('/getListUploadedCourses/{authorID}',[CourseController::class,'getListUploadedCourses']);
+
     Route::post('/manage/addCourse',[CourseController::class,'addCourse']);
     Route::post('/manage/addChap',[CourseController::class,'addChap']);
     Route::post('/manage/addLesson',[CourseController::class,'addLesson']);
@@ -44,9 +51,10 @@ Route::group(['prefix' => 'teacher'], function() {
     Route::put('/manage/updateLesson/{lessonID}',[CourseController::class,'updateLesson']);
 });
 
+Route::post('/login',[AuthController::class,'login']);
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
-
 
 Route::group(['prefix' => 'admin'], function() {
 
 });
+Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
