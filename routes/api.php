@@ -6,6 +6,8 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
+use App\Http\Middleware\checkLogin;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,6 +25,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
 Route::post('/approveCourse',[CourseController::class,'approveCourse']);
+Route::post('/login', [AuthController::class , 'login']);
+Route::get('/check', [AuthController::class , 'check']);
 
 
 //Router teacher manage
@@ -46,6 +50,7 @@ Route::group(['prefix' => 'teacher'], function() {
     Route::put('/manage/updateChap/{chapID}',[CourseController::class,'updateChap']);
     Route::put('/manage/updateLesson/{lessonID}',[CourseController::class,'updateLesson']);
 });
+
 Route::post('/login',[AuthController::class,'login']);
 // Route::middleware('auth:api')->group(function(){
 //     Route::get('/auth',[AuthController::class,'check']);
