@@ -74,11 +74,11 @@ class AuthController extends Controller
 
     }
 
-    public function check(Request $request)
+    public function check()
     {
-        // $user = Auth::user();
-        echo $request->get('ID');
-        return response()->json(['message'=>'ngua don']);
+        $user = Auth::user();
+        // echo $request->get('ID');
+        return response()->json(['message'=>'ngua don','image' => $user->User_image,'userName' => $user->User_name],200);
     }
 
     // public function detailsUser()

@@ -17,12 +17,16 @@ class AdminAccess
     public function handle(Request $request, Closure $next)
     {   
         $user = Auth::user();
-
-        if($user->User_role == 1)
-        {   
-            $request->attributes->add(['ID'=>$user->User_ID]);
-            return $next($request);
+        // echo $user;
+        if($user)
+        {
+            if($user->User_role == 0)
+            {   
+                // $request->attributes->add(['ID'=>$user->User_ID]);
+                return $next($request);
+            }
+            return response()->json(['message'=>'Dang nhap bang admin di'],403);
         }
-        else return response()->json(['message'=>'Dang nha bang teacher di'],403);
+        else return response()->json(['message'=>'Dang nhap bang admin di'],403);
     }
 }
