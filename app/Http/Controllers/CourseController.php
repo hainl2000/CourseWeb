@@ -146,11 +146,12 @@ class CourseController extends Controller
         $totalStudent = CourseEnrollment::where('Course_ID' , '=',$courseID)->count();
         $lists[0]->{'totalStudent'} = $totalStudent;
         $courseTags = CourseTag::where('Course_ID','=',$courseID)->pluck('Tag_ID');
-        array_insert($lists,$lists[0]->Course_category,$courseTags);
+        // array_insert($lists,$lists[0]->Course_category,$courseTags);
         // $lists[0]->Course_category->{'Tag'} = $courseTags;
         // $lists[1]->{'tag'} = $courseTag;
-        // array_push($lists,$courseTags);
+        array_push($lists,$courseTags);
         $listChaps = Chap::where('Course_ID','=',$courseID)->get(['Chap_ID','Chap_description']);
+        $listLessons = array();
         foreach($listChaps as $chap)
         {
             // echo $chap;
@@ -158,10 +159,12 @@ class CourseController extends Controller
             $lesson = Lesson::where('Chap_ID','=',$chap->Chap_ID)->get(['Lesson_header','Lesson_description','Lesson_video','Lesson_view']);
             $list = array('chap' =>$chap,'lesson' => $lesson);
 
-            array_push($lists,$list);
+            array_push($listLessons,$list);
         }
+        array_push($lists,$listLessons);
         return $lists;
     }
+
 
 
 

@@ -18,10 +18,11 @@ class AdminAccess
     {   
         $user = Auth::user();
 
-        if(Auth::user()->User_role == 0)
-        {
+        if($user->User_role == 1)
+        {   
+            $request->attributes->add(['ID'=>$user->User_ID]);
             return $next($request);
         }
-        else return response()->json(['message'=>'Dang nha bang teacher di']);
+        else return response()->json(['message'=>'Dang nha bang teacher di'],403);
     }
 }
