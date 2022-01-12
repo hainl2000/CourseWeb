@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Course;
@@ -47,11 +48,23 @@ class AdminController extends Controller
         for ($i = 0; $i < count($value) ; ++$i) {
             $value[$i]->count = DB::table('CourseEnrollment')
                 -> where('User_ID', $value[$i]->User_ID)->count();
-
         }
-
         return response()->json([
             $value
+        ],200);
+    }
+
+    public function general () {
+        $totalStudent = User::where('User_role', '1')->count();
+        $totalteacher = User::where('User_role', '2')->count();
+        $totalCourse = Course::all()->count();
+        $totalPay = PaymentHistory::all()->sum('Payment_price');
+
+        return response()->json([
+            'totalStudent' => $totalStudent,
+            'totalTeacher' => $totalteacher,
+            'totalCourse'  => $totalCourse,
+            'totalPay' => $totalPay,
         ],200);
     }
 }

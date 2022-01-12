@@ -58,5 +58,6 @@ Route::get('/getListCategories',[CategoryController::class,'getListCategories'])
 Route::group(['prefix' => 'admin'], function() {
     Route::get('listTeacher', [AdminController::class, 'listTeacher']);
     Route::get('listStudent', [AdminController::class, 'listStudent']);
+    Route::get('general', [AdminController::class,'general']);
 });
 Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
