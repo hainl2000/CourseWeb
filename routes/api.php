@@ -7,6 +7,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\checkLogin;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +56,7 @@ Route::post('/login',[AuthController::class,'login']);
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
 
 Route::group(['prefix' => 'admin'], function() {
-
+    Route::get('listTeacher', [AdminController::class, 'listTeacher']);
+    Route::get('listStudent', [AdminController::class, 'listStudent']);
 });
 Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
