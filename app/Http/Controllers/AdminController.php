@@ -90,4 +90,47 @@ class AdminController extends Controller
             $revune
         ],200);
     }
+
+    public function topTeacher() {
+
+        $value = User::where('User_role', 1)->get();
+
+        for ($i = 0; $i < count($value) ; ++$i) {
+            $value[$i]->count = Course::with('courseenrollment')
+                ->where('Author_ID', $value[$i]->User_ID)
+                ->get()
+                ->count();
+
+            $value[$i]->total = (int) CourseEnrollment::join('course', 'course.Course_ID', 'courseenrollment.Course_ID')
+                ->where('course.Author_ID', $value[$i]->User_ID)
+                ->join('paymenthistory','paymenthistory.Payment_ID', 'courseenrollment.Payment_ID')
+                ->groupBy('course.Author_ID')
+                ->sum('Payment_price');
+        }
+
+        $value = json_decode(json_encode($value), true);;
+        usort($value, function ($a, $b) {
+            if ($a['total'] == $b['total']) {
+                return -1;
+            }
+            return  ($a['total'] > $b['total']) ? -1 : 1;
+        });
+
+        return response()->json($value, 200);
+    }
+
+    public function topStudent () {
+        $value = User::where('User_role',2)->get();
+
+        for ($i = 0; $i < count($value); ++$i) {
+            $value[$i]->count = CourseEnrollment::where('User_ID', $value[$i]->User_ID)
+                ->count();
+
+            $value[$i]->total = (int) CourseEnrollment::where('User_ID',$value[$i]->User_ID)
+                ->join('paymenthistory', 'paymenthistory.Payment_ID', 'courseenrollment.Payment_ID')
+                ->groupBy('User_ID')
+                ->sum('paymenthistory.Payment_price');
+        }
+        return response()->json($value, 200);
+    }
 }

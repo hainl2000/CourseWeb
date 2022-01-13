@@ -13,6 +13,6 @@ class PaymentHistory extends Model
     public $timestamps = false;
 
     public function paymentCourse() {
-        return $this->hasMany('App\Models\courseEnrollment','Payment_ID','Payment_ID');
+        return $this->hasOne('App\Models\courseEnrollment','Payment_ID','Payment_ID');
     }
 }

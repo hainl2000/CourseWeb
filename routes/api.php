@@ -57,7 +57,8 @@ Route::group(['prefix' => 'admin'],function(){
     Route::get('/listStudent', [AdminController::class, 'listStudent']);
     Route::get('/general', [AdminController::class,'general']);
     Route::get('/chartData', [AdminController::class, 'chartData']);
-
+    Route::get('/topTeacher', [AdminController::class, 'topTeacher']);
+    Route::get('/topStudent', [AdminController::class, 'topStudent']);
 });
 
 Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'check']);
