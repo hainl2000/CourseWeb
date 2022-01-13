@@ -315,6 +315,14 @@ class CourseController extends Controller
     public function newCourse () {
         $value = Course::orderBy('Course_createdAt', 'DESC')->get();
 
+        for ($i = 0; $i < count($value); ++$i) {
+            $value[$i]->count = CourseEnrollment::where('Course_ID', $value[$i]->Course_ID)->count();
+            $tmp = User::select('User_name')
+                ->where('User_ID', $value[$i]->Author_ID)
+                ->first();
+            $value[$i]->teacher = $tmp->User_name;
+        }
+
         return response()->json($value,200);
     }
 
