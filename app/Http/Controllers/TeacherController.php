@@ -90,7 +90,7 @@ class TeacherController extends Controller
                 ORDER BY COUNT(p.Payment_ID) DESC');
 
         return response()->json([
-            !empty($value[0])? $value[0] : ""
+            !empty($value[0])? $value[0] : []
         ],200);
 
     }
@@ -105,7 +105,7 @@ class TeacherController extends Controller
             ORDER BY Payment_date ASC');
 
         return response()->json([
-            !empty($value[0])? $value[0] : ""
+            !empty($value[0])? $value[0] : []
         ],200);
     }
 
@@ -119,7 +119,7 @@ class TeacherController extends Controller
                 GROUP BY c.Author_ID, u.User_ID, ce.User_ID, u.User_name, u.User_phone, u.User_account');
 
         return response()->json([
-            !empty($value[0])? $value[0] : ""
+            !empty($value[0])? $value[0] : []
         ],200);
     }
 
@@ -132,7 +132,7 @@ class TeacherController extends Controller
         }
 
         return response()->json([
-            !empty($value)? $value : ""
+            !empty($value)? $value : []
         ],200);
     }
 
@@ -165,7 +165,7 @@ class TeacherController extends Controller
 
 
         return response()->json([
-            !empty($value)? $value : ""
+            !empty($value)? $value : []
         ],200);
     }
 }

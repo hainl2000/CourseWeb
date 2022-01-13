@@ -63,4 +63,31 @@ class AdminController extends Controller
             'totalPay' => $totalPay,
         ],200);
     }
+
+    public function chartData () {
+        $newCourse = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        $revune = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);;
+
+        $value = DB::table('courseenrollment')
+            ->join('paymenthistory', 'paymenthistory.Payment_ID', 'courseenrollment.Payment_ID')
+            ->groupByRaw('EXTRACT(MONTH FROM courseenrollment.Payment_date)')
+            ->select(DB::raw('EXTRACT(MONTH FROM courseenrollment.Payment_date) month, SUM(Payment_price) total'))->get();
+
+        $value2 = DB::table('course')
+            ->groupByRaw('EXTRACT(MONTH FROM Course_createdAt)')
+            ->select(DB::raw('EXTRACT(MONTH FROM Course_createdAt) month, COUNT(Course_ID) count'))->get();
+
+        foreach ($value2 as $item) {
+            $newCourse[$item->month] = (int)$item->count;
+        }
+
+        foreach ($value as $item) {
+            $revune[$item->month] = (int)$item->total;
+        }
+//
+        return response()->json([
+            $newCourse,
+            $revune
+        ],200);
+    }
 }

@@ -50,12 +50,14 @@ Route::group(['prefix' => 'teacher'], function() {
     Route::put('/manage/updateLesson/{lessonID}',[CourseController::class,'updateLesson']);
 });
 
-Route::group(['prefix' => 'admin','middleware'=>['auth:api','admin']],function(){
+Route::group(['prefix' => 'admin'],function(){
     Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
     Route::post('/approveCourse',[CourseController::class,'approveCourse']);
     Route::get('/listTeacher', [AdminController::class, 'listTeacher']);
     Route::get('/listStudent', [AdminController::class, 'listStudent']);
     Route::get('/general', [AdminController::class,'general']);
+    Route::get('/chartData', [AdminController::class, 'chartData']);
+
 });
 
 Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'check']);
@@ -63,8 +65,10 @@ Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'chec
 //     Route::get('/auth',[AuthController::class,'check']);
 // });
 // Route::group(['middleware'=>['auth:api','admin']],function(){
-    
+
 //     Route::get('/auth',[AuthController::class,'check']);
 // });
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
 Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
+Route::get('/topCourse', [CourseController::class, 'topCourse']);
+Route::get('/newCourse', [CourseController::class, 'newCourse']);

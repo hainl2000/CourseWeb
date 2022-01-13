@@ -242,13 +242,7 @@ class CourseController extends Controller
 
     public function getListUploadedCourses(Request $request)
     {
-        // $listCourses = Course::where('Author_ID','=',$request->input('Author_ID'))->paginate(2);
-        // echo json_encode($listCourses);
-        // $total =  $listCourses->lastPage();
-        // $current = $listCourses->currentPage();
-        // $currentList = $listCourses->items();
-        // return response()->json(['current' => $current ,'total' => $total ,'listCourse' => $currentList],200);
-        // $returnList = array();
+
         $authorID = $request->route('authorID');
         // echo 'tac gia' . $authorID;
         $listCourses = Course::where('Author_ID','=',$authorID)->get(['Course_ID','Course_header','Course_rate','Course_image']);
@@ -293,6 +287,35 @@ class CourseController extends Controller
             'Lesson_isFree' => $request->input('Lesson_isFree')
         ]);
         return response()->json(['message' => 'Update Lesson Succesfully'],200);
+    }
+
+    public function topCourse() {
+
+        $value = Course::all();
+
+        for ($i = 0; $i < count($value); ++$i) {
+            $value[$i]->count = CourseEnrollment::where('Course_ID', $value[$i]->Course_ID)->count();
+            $tmp = User::select('User_name')
+                ->where('User_ID', $value[$i]->Author_ID)
+                ->first();
+            $value[$i]->teacher = $tmp->User_name;
+        }
+
+        $value = json_decode(json_encode($value), true);;
+        usort($value, function ($a, $b) {
+            if ($a['count'] == $b['count']) {
+                return -1;
+            }
+            return  ($a['count'] > $b['count']) ? -1 : 1;
+        });
+
+        return response()->json($value,200);
+    }
+
+    public function newCourse () {
+        $value = Course::orderBy('Course_createdAt', 'DESC')->get();
+
+        return response()->json($value,200);
     }
 
 }
