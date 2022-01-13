@@ -11,5 +11,6 @@ class CourseEnrollment extends Model
     protected $table = 'courseenrollment';
     // protected $primaryKey = 'Course_ID';
     const CREATED_AT = 'Payment_date';
+    const UPDATE_AT = NULL;
     // public $timestamps = false;
 }

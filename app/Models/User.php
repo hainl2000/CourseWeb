@@ -31,7 +31,7 @@ class User extends Authenticatable
     {
         return 'User_account';
     }
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function teacherCourse() {
         return $this->hasMany('App\Models\course','Author_ID','User_ID');

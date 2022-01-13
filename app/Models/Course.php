@@ -18,6 +18,6 @@ class Course extends Model
     const UPDATED_AT = 'Course_updatedAt';
 
     public function courseEnrollment () {
-        return $this->hasMany('App\Models\courseEnrollment','Course_ID','Course_ID');
+        return $this->hasMany('App\Models\CourseEnrollment','Course_ID','Course_ID');
     }
 }
