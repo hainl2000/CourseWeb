@@ -73,3 +73,4 @@ Route::get('/getListCategories',[CategoryController::class,'getListCategories'])
 Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
 Route::get('/topCourse', [CourseController::class, 'topCourse']);
 Route::get('/newCourse', [CourseController::class, 'newCourse']);
+Route::get('/topTeacher', [AdminController::class, 'topTeacher']);

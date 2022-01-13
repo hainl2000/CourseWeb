@@ -131,6 +131,15 @@ class AdminController extends Controller
                 ->groupBy('User_ID')
                 ->sum('paymenthistory.Payment_price');
         }
+
+        $value = json_decode(json_encode($value), true);;
+        usort($value, function ($a, $b) {
+            if ($a['total'] == $b['total']) {
+                return -1;
+            }
+            return  ($a['total'] > $b['total']) ? -1 : 1;
+        });
+
         return response()->json($value, 200);
     }
 }
