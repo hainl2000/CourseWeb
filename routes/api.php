@@ -74,3 +74,4 @@ Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDeta
 Route::get('/topCourse', [CourseController::class, 'topCourse']);
 Route::get('/newCourse', [CourseController::class, 'newCourse']);
 Route::get('/topTeacher', [AdminController::class, 'topTeacher']);
+Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
