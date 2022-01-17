@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/login', [AuthController::class , 'login']);
-Route::get('/check', [AuthController::class , 'check']);
+// Route::get('/check', [AuthController::class , 'check']);
 
 
 //Router teacher manage
@@ -74,3 +74,4 @@ Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDeta
 Route::get('/topCourse', [CourseController::class, 'topCourse']);
 Route::get('/newCourse', [CourseController::class, 'newCourse']);
 Route::get('/topTeacher', [AdminController::class, 'topTeacher']);
+Route::get('/getCategoryByTag/{Tag_ID}',[CategoryController::class,'getCategoryByTag']);

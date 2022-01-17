@@ -58,6 +58,7 @@ class AuthController extends Controller
             $user = Auth::user();
             $success['token'] = $user->createToken('access_token')->accessToken;
             $success['name'] = $user->User_name;
+            $success['image'] = $user->User_image;
             // echo $user;
             return response()->json([
                 'success' => $success,
