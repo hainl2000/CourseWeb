@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\checkLogin;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,11 @@ Route::group(['prefix' => 'admin', 'middleware'=>['auth:api','admin']],function(
     Route::get('/topStudent', [AdminController::class, 'topStudent']);
 });
 
+Route::group(['prefix'=>'user','middleware'=>['auth:api','user']],function(){
+    Route::get('/getProfile',[UserController::class,'getProfile']);
+    Route::put('/updateProfile',[UserController::class,'updateProfile']);
+});
+
 Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'check']);
 // Route::middleware('auth:api')->group(function(){
 //     Route::get('/auth',[AuthController::class,'check']);
@@ -69,9 +75,11 @@ Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'chec
 
 //     Route::get('/auth',[AuthController::class,'check']);
 // });
+
 Route::get('/getListCategories',[CategoryController::class,'getListCategories']);
 Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
 Route::get('/topCourse', [CourseController::class, 'topCourse']);
 Route::get('/newCourse', [CourseController::class, 'newCourse']);
 Route::get('/topTeacher', [AdminController::class, 'topTeacher']);
 Route::get('/getCategoryByTag/{Tag_ID}',[CategoryController::class,'getCategoryByTag']);
+Route::get('/getListCoursesByCategory/{categoryID}',[CourseController::class,'getListCoursesByCategory']);

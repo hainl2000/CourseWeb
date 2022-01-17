@@ -211,7 +211,7 @@ class CourseController extends Controller
         $listCourses = Course::where('Course_category','=',$request->route('categoryID'))->paginate(3);
         $total =  $listCourses->lastPage();
         $current = $listCourses->currentPage();
-        $currentList = $listCourses->items();
+        $currentList = $listCourses->items();   
         foreach($currentList as $course)
         {
             $name = User::where('User_ID','=',$course->Author_ID)->pluck('User_name');
