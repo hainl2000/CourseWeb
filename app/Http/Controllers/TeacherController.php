@@ -17,8 +17,10 @@ class TeacherController extends Controller
 
     public function tongQuan() {
 
-
-        $courseTotal = User::find(3)->teacherCourse->count();
+        $user = Auth::user()->User_ID;
+        $courseTotal = User::find($user)
+            ->where("User_ID", $user)
+            ->join('course','course.Author_id', "user.User_ID")->count();
         $studentTotal = DB::select("SELECT COUNT(ce.User_ID) as total
                     FROM courseenrollment ce, course c
                     WHERE c.Author_ID = $user
@@ -42,7 +44,8 @@ class TeacherController extends Controller
                 "
         );
         return response()->json(
-            ['courseTotal' => !empty($courseTotal) ? $courseTotal : 0,
+            [
+                'courseTotal' => !empty($courseTotal) ? $courseTotal : 0,
              'studentTotal' =>  !empty($studentTotal[0]->total) ? $studentTotal[0]->total : 0,
              'revune' => !empty($revune[0]->total) ? $revune[0]->total : 0,
              'payTotal' => !empty($payTotal[0]->total) ? $payTotal[0]->total : 0
@@ -54,7 +57,7 @@ class TeacherController extends Controller
         $newStudent = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         $revune = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-        $user = Auth::user()->id;
+        $user = Auth::user()->User_ID;
 
         $value = DB::select("SELECT EXTRACT(MONTH FROM Payment_date) month, COUNT(User_ID) as total
                     FROM courseenrollment ce, course c
@@ -87,8 +90,8 @@ class TeacherController extends Controller
 
     public function topStudents () {
 
-        $user = Auth::user()->id;
-        $value = DB::select("SELECT ce.User_ID , u.User_name username,  COUNT(p.Payment_ID) order, SUM(p.Payment_price) price
+        $user = Auth::user()->User_ID;
+        $value = DB::select("SELECT ce.User_ID , u.User_name username,  COUNT(p.Payment_ID) 'order', SUM(p.Payment_price) price
                 FROM courseenrollment ce, course c, paymenthistory p, user u
                 WHERE c.Author_ID = $user
                 AND ce.Course_ID = c.Course_ID
@@ -103,7 +106,7 @@ class TeacherController extends Controller
 
     public function newOrders () {
 
-        $user = Auth::user()->id;
+        $user = Auth::user()->User_ID;
 
         $value = DB::select("SELECT ce.User_ID as id, u.User_name as user, Payment_date as date, (p.Payment_price) price
             FROM courseenrollment ce, course c, paymenthistory p, user u
@@ -117,7 +120,7 @@ class TeacherController extends Controller
     }
 
     public function listStudent () {
-        $user = Auth::user()->id;
+        $user = Auth::user()->User_ID;
         $value = DB::select("SELECT ce.User_ID id, u.User_name as name, u.User_phone phone, u.User_account as email ,COUNT(ce.Course_ID) total_order, SUM(p.Payment_price) as total_spend
                 FROM courseenrollment ce, course c, user u, paymenthistory p
                 WHERE c.Author_ID = $user
@@ -131,7 +134,7 @@ class TeacherController extends Controller
 
     public function listCoures () {
 
-        $user = Auth::user()->id;
+        $user = Auth::user()->User_ID;
         $value = User::find($user)
             ->teacherCourse;
 
@@ -145,7 +148,7 @@ class TeacherController extends Controller
     public function updateInforTeacher(Request $request)
     {
 
-        $user = Auth::user()->id;
+        $user = Auth::user()->User_ID;
         $id = $request->input('Teacher_ID');
         $header = $request->input('Teacher_header');
         $des = $request->input('Teacher_description');
@@ -161,7 +164,7 @@ class TeacherController extends Controller
 
     public function listHistory () {
 
-        $user = Auth::user()->id;
+        $user = Auth::user()->User_ID;
         $value = DB::select("
             SELECT ur.User_ID as id, ur.User_name as username, c.Course_header coursename, p.Payment_price price, ce.Payment_date
             FROM user u, course c, courseenrollment ce, paymenthistory p, user ur

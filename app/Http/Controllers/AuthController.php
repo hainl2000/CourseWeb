@@ -45,7 +45,7 @@ class AuthController extends Controller
                 $newTeacherInfor->Teacher_ID = $newUser->User_ID;
                 $newTeacherInfor->save();
             }
-            return response()->json(['status'=>'Register successfully'],201); 
+            return response()->json(['status'=>'Register successfully'],201);
         }
     }
 
@@ -64,7 +64,7 @@ class AuthController extends Controller
                 'success' => $success,
                 'message' => 'Login successfully',
             ],200);
-        } 
+        }
         else {
             return response()->json(['error'],400);
         }
@@ -80,11 +80,12 @@ class AuthController extends Controller
         $user = Auth::user();
         // echo  "con cho". $user;
         // echo $request->get('ID');
-        return response()->json(['message'=>'ngua don','image' => $user->User_image,'userName' => $user->User_name],200);
+//        return response()->json(['message'=>'ngua don','image' => $user->User_image,'userName' => $user->User_name],200);
+        return response()->json( $user,200);
     }
 
     // public function detailsUser()
-    // {   
+    // {
     //     $user = Auth::user();
     //     return response()->json()
     // }

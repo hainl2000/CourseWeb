@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use App\Models;
 
 class User extends Authenticatable
 {
@@ -34,6 +35,6 @@ class User extends Authenticatable
     public $timestamps = true;
 
     public function teacherCourse() {
-        return $this->hasMany('App\Models\course','Author_ID','User_ID');
+        return $this->hasMany('course','Author_ID','User_ID');
     }
 }
