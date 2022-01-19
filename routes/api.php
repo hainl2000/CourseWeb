@@ -31,7 +31,7 @@ Route::post('/register', [AuthController::class , 'register']);
 
 
 //Router teacher manage
-Route::group(['prefix' => 'teacher'], function() {
+Route::group(['prefix' => 'teacher','middleware'=>['auth:api','teacher']], function() {
     Route::get('/general',[TeacherController::class,'tongQuan']);
     Route::get('/statistic/newStudent',[TeacherController::class,'newStudent']);
     Route::get('/statistic/topStudents',[TeacherController::class,'topStudents']);
