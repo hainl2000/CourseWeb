@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Course;
 use App\Models\CourseEnrollment;
@@ -13,6 +14,7 @@ class AdminController extends Controller
 {
     //
     public function listTeacher () {
+
         $value = DB::select('SELECT u.User_ID, u.User_name,User_account ,User_phone,COUNT(c.Course_ID) count
             FROM user u, course c
             WHERE u.User_role = 1
@@ -20,9 +22,9 @@ class AdminController extends Controller
             GROUP BY u.User_ID, u.User_name, User_phone,User_account');
 
         for ($i = 0; $i < count($value) ; ++$i) {
-            $value[$i]->total = (int) DB::table('PaymentHistory')
-                ->join('CourseEnrollment', 'CourseEnrollment.Payment_ID', 'PaymentHistory.Payment_ID')
-                ->join('Course', 'CourseEnrollment.Course_ID', 'Course.Course_ID')
+            $value[$i]->total = (int) DB::table('paymenthistory')
+                ->join('courseenrollment', 'courseenrollment.Payment_ID', 'paymenthistory.Payment_ID')
+                ->join('course', 'courseenrollment.Course_ID', 'course.Course_ID')
                 -> where('Author_ID', $value[$i]->User_ID)->sum('Payment_price');
 
         }
@@ -51,6 +53,7 @@ class AdminController extends Controller
     }
 
     public function general () {
+
         $totalStudent = User::where('User_role', '1')->count();
         $totalteacher = User::where('User_role', '2')->count();
         $totalCourse = Course::all()->count();
@@ -133,11 +136,11 @@ class AdminController extends Controller
         }
 
         $value = json_decode(json_encode($value), true);;
-        usort($value, function ($a, $b) {
-            if ($a['total'] == $b['total']) {
-                return -1;
-            }
-            return  ($a['total'] > $b['total']) ? -1 : 1;
+            usort($value, function ($a, $b) {
+                if ($a['total'] == $b['total']) {
+                    return -1;
+                }
+                return  ($a['total'] > $b['total']) ? -1 : 1;
         });
 
         return response()->json($value, 200);
