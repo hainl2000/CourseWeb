@@ -205,18 +205,17 @@ class CourseController extends Controller
     {
         // echo $request;
         $user = Auth::user();
-        echo "con cho ngu hoc" . $user;
         // dd($user);
         // $user = auth()->user();
         $course_ID = $request->route('courseID');
         if($user)
-        {   
+        {
             $user_ID = $user->User_ID;
             $isEnroll = CourseEnrollment::where('Course_ID','=',$course_ID)->where('User_ID','=',$user_ID)->first();
             echo "ngu ngoc" .$isEnroll;
             if($isEnroll)
-            {   
-                
+            {
+
                 $course = self::getFullInforCourse($course_ID);
                 return response()->json($course,200);
             }
@@ -260,7 +259,7 @@ class CourseController extends Controller
         $listCourses = Course::where('Course_category','=',$request->route('categoryID'))->paginate(3);
         $total =  $listCourses->lastPage();
         $current = $listCourses->currentPage();
-        $currentList = $listCourses->items();   
+        $currentList = $listCourses->items();
         foreach($currentList as $course)
         {
             $name = User::where('User_ID','=',$course->Author_ID)->pluck('User_name');

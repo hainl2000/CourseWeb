@@ -50,6 +50,8 @@ Route::group(['prefix' => 'teacher'], function() {
     Route::put('/manage/updateCourse/{courseID}',[CourseController::class,'updateCourse']);
     Route::put('/manage/updateChap/{chapID}',[CourseController::class,'updateChap']);
     Route::put('/manage/updateLesson/{lessonID}',[CourseController::class,'updateLesson']);
+
+    Route::get('/getCourseDetail/{courseID}',[CourseController::class,'getCourseDetail']);
 });
 
 Route::group(['prefix' => 'admin', 'middleware'=>['auth:api','admin']],function(){
