@@ -72,10 +72,10 @@ class CourseController extends Controller
     {
         $lists = array();
         $pendingCourses = Course::where('Course_approve','=','0')->get();
-//        foreach($pendingCourses as $course){
-//            $name = User::where('User_ID','=',$course->Author_ID)->pluck('User_name');
-//            $course->{'teacherName'} = $name[0];
-//        }
+        foreach($pendingCourses as $course){
+            $name = User::where('User_ID','=',$course->Author_ID)->pluck('User_name');
+            $course->{'teacherName'} = $name[0];
+        }
         return response()->json($pendingCourses,200);
     }
 
