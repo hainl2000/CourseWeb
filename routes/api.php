@@ -87,4 +87,4 @@ Route::get('/topTeacher', [AdminController::class, 'topTeacher']);
 Route::get('/getCategoryByTag/{Tag_ID}',[CategoryController::class,'getCategoryByTag']);
 Route::get('/getListCoursesByCategory/{categoryID}',[CourseController::class,'getListCoursesByCategory']);
 Route::get('/getCategoryById/{categoryID}',[CategoryController::class,'getCategoryById']);
-Route::get('/getListCoursesByTag/{categoryID}',[CourseController::class,'getListCoursesByCategory']);
+Route::get('/getListCoursesByTag/{tagID}',[CourseController::class,'getListCoursesByTag']);
