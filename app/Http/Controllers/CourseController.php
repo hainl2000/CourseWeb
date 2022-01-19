@@ -215,19 +215,20 @@ class CourseController extends Controller
         return $lists;
     }
 
-    public function getCourseDetailForStudent(Request $request)
+    public function getCourseDetailsForStudent(Request $request)
     {
         // echo $request;
-        $user = Auth::user();
-        // echo "con cho ngu hoc" . $user;
+        $userID = Auth::id();
         // dd($user);
         // $user = auth()->user();
         $course_ID = $request->route('courseID');
-        if($user)
-        {   
-            $user_ID = $user->User_ID;
-            $isEnroll = CourseEnrollment::where('Course_ID','=',$course_ID)->where('User_ID','=',$user_ID)->first();
-            echo "ngu ngoc" .$isEnroll;
+        if($userID)
+        {      
+            // echo "id " . $userID;
+            // echo "course" . $course_ID;
+            // $user_ID = $user->User_ID;
+            $isEnroll = CourseEnrollment::where('Course_ID','=',$course_ID)->where('User_ID','=',$userID)->first();
+            // echo "ngu ngoc" .$isEnroll;
             if($isEnroll)
             {   
                 
@@ -249,8 +250,10 @@ class CourseController extends Controller
     public function updateCourseRate(Request $request)
     {
         $comment = new Comment;
+        $userID = $request->get('ID');
         $comment->Comment_content = $request->input('Comment_content');
-        $comment->Comment_by = $request->input('User_ID');
+        // $comment->Comment_by = $request->input('User_ID');
+        $comment->Comment_by = $userID;
         $comment->Comment_in = $request->input('Course_ID');
         $comment->User_rate = $request->input('User_rate');
         $comment->Comment_at = now();
@@ -262,19 +265,19 @@ class CourseController extends Controller
         return response()->json(['message' => 'Succesfully'],201);
     }
 
-    public function showComment(Request $request)
-    {
-        $listsComment = array();
-        $Course_ID = $request->input('Course_ID');
-        $Comments_in_course = Comment::where('Comment_in','=',$Course_ID)->get();
-        foreach($Comments_in_course as $comment)
-        {
-            $user = User::where('User_ID','=',$comment->Comment_by)->get(['User_name']);
-            $list =  array('comment' =>$comment , 'name' => ($user[0]->User_name));
-            array_push($listsComment,$list);
-        }
-        return response()->json($listsComment,201);
-    }
+    // public function showComment(Request $request)
+    // {
+    //     $listsComment = array();
+    //     $Course_ID = $request->input('Course_ID');
+    //     $Comments_in_course = Comment::where('Comment_in','=',$Course_ID)->get();
+    //     foreach($Comments_in_course as $comment)
+    //     {
+    //         $user = User::where('User_ID','=',$comment->Comment_by)->get(['User_name']);
+    //         $list =  array('comment' =>$comment , 'name' => ($user[0]->User_name));
+    //         array_push($listsComment,$list);
+    //     }
+    //     return response()->json($listsComment,201);
+    // }
 
     public function getListCoursesByCategory(Request $request)
     {
@@ -313,7 +316,8 @@ class CourseController extends Controller
     public function getListUploadedCourses(Request $request)
     {
 
-        $authorID = $request->route('authorID');
+        $authorID = $request->get('Teacher_ID');
+        // $authorID = $request->route('authorID');
         // echo 'tac gia' . $authorID;
         $listCourses = Course::where('Author_ID','=',$authorID)->get(['Course_ID','Course_header','Course_rate','Course_image']);
         ;
