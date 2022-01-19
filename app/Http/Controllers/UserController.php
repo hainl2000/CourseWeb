@@ -22,7 +22,11 @@ class UserController extends Controller
             'User_DoB' => $request->input('User_DoB'),
             'User_image' => $request->input('User_image')
         ]);
-        return response()->json(['message' => 'Update Profile Succesfully'],200);
+
+        
+        $data = array('message' => 'Update Profile Succesfully', 'User_name' => $request->input('User_name'), 'User_image' => $request->input('User_image'));
+
+        return response()->json($data,200);
     }
 
 

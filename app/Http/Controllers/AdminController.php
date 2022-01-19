@@ -116,7 +116,7 @@ class AdminController extends Controller
             return  ($a['total'] > $b['total']) ? -1 : 1;
         });
 
-        return response()->json($value, 200);
+        return response()->json(array_slice($value,0,5), 200);
     }
 
     public function topStudent () {

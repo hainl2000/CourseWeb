@@ -309,7 +309,9 @@ class CourseController extends Controller
             return  ($a['count'] > $b['count']) ? -1 : 1;
         });
 
-        return response()->json($value,200);
+        
+
+        return response()->json(array_slice($value, 0,8),200);
     }
 
     public function newCourse () {
@@ -323,7 +325,7 @@ class CourseController extends Controller
             $value[$i]->teacher = $tmp->User_name;
         }
 
-        return response()->json($value,200);
+        return response()->json(array_slice($value->toArray(), 0,8),200);
     }
 
 }
