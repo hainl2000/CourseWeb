@@ -18,20 +18,27 @@ use App\Models\CourseTag;
 class CourseController extends Controller
 {
     //
-    public function addCourseTag(Request $request)
-    {
-        $newCourseTag = new CourseTag;
-        $newCourseTag->Course_ID = $request->input('Course_ID');
-        $newCourseTag->Tag_ID = $request->input('Tag_ID');
-        $newCourseTag->save();
+    public function addCourseTag($courseID,$tags)
+    {   
+        // echo $tags;
+        foreach($tags as $tag)
+        {   
+            
+            $newCourseTag = new CourseTag;
+            $newCourseTag->Course_ID = $courseID;
+            $newCourseTag->Tag_ID = $tag;
+            $newCourseTag->save();
+        }
         // echo $newCourse;
-        return response()->json(['status'=>'Add Course Successfully'],201);
+        // return response()->json(['status'=>'Add Course Successfully'],201);
     }
 
     public function addCourse(Request $request)
     {
         $newCourse = new Course;
-        $newCourse->Author_ID = $request->input('Author_ID');
+        $authorID = $request->get('Teacher_ID');
+        $newCourse->Author_ID = $authorID;
+        // $newCourse->Author_ID = $request->input('Author_ID');
         $newCourse->Course_header = $request->input('Course_header');
         $newCourse->Course_description = $request->input('Course_description');
         $newCourse->Course_price = $request->input('Course_price');
@@ -39,7 +46,8 @@ class CourseController extends Controller
         $newCourse->Course_category = $request->input('Course_category');
         // $newCourse->course_rate = 0;
         $newCourse->save();
-        echo $newCourse;
+        self::addCourseTag($newCourse->Course_ID,$request->input('Course_tags'));
+        // echo $newCourse;
         return response()->json(['status'=>'Add Course Successfully','courseID' => $newCourse->Course_ID],201);
     }
 
@@ -54,14 +62,15 @@ class CourseController extends Controller
         $newLesson->Lesson_isFree = $request->input('Lesson_isFree');
         $newLesson->Lesson_view = 0;
         $newLesson->save();
-        return response()->json(['status'=>'Add Lesson Successfully'],201);
+        // echo $newLesson;
+        return response()->json(['status'=>'Add Lesson Successfully','LessonID'=> $newLesson->lesson_ID],201);
     }
 
     public function addChap(Request $request)
     {
         $newChap = new Chap;
         $newChap->Course_ID = $request->input('Course_ID');
-        $newChap->Chap_ID = $request->input('Chap_description');
+        $newChap->Chap_description = $request->input('Chap_description');
         $newChap->save();
         return response()->json(['status'=>'Add Chap Successfully','chapID' => $newChap->Chap_ID],201);
     }
@@ -95,6 +104,14 @@ class CourseController extends Controller
     {
         $approveCourse = $request->input('Course_ID');
         Course::where('Course_ID','=', $approveCourse)->update(['Course_approve' => '1']);
+
+        return response()->json(['message' => 'Succesfully'],200);
+    }
+
+    public function refuseCourse(Request $request)
+    {
+        $refuseCourse = $request->input('Course_ID');
+        Course::where('Course_ID','=', $refuseCourse)->update(['Course_approve' => '2']);
 
         return response()->json(['message' => 'Succesfully'],200);
     }
@@ -198,14 +215,11 @@ class CourseController extends Controller
         return $lists;
     }
 
-
-
-
-    public function getCourseDetail(Request $request)
+    public function getCourseDetailForStudent(Request $request)
     {
         // echo $request;
         $user = Auth::user();
-        echo "con cho ngu hoc" . $user;
+        // echo "con cho ngu hoc" . $user;
         // dd($user);
         // $user = auth()->user();
         $course_ID = $request->route('courseID');
@@ -222,6 +236,13 @@ class CourseController extends Controller
             }
         }
         $course = self::getInforTrialCourse($course_ID);
+        return response()->json($course,200);
+    }
+
+    public function getaCourseDetail(Request $request)
+    {
+        $course_ID = $request->route('courseID');
+        $course = self::getFullInforCourse($course_ID);
         return response()->json($course,200);
     }
 

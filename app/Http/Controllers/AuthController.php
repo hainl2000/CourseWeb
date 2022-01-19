@@ -78,6 +78,7 @@ class AuthController extends Controller
     public function check()
     {
         $user = Auth::user();
+        // echo  "con cho". $user;
         // echo $request->get('ID');
         return response()->json(['message'=>'ngua don','image' => $user->User_image,'userName' => $user->User_name],200);
     }

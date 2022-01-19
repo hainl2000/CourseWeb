@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -10,6 +10,8 @@ class UserController extends Controller
     public function getProfile(Request $request)
     {
         $userID = $request->get('ID');
+        // $userID = Auth::user();
+        // echo "con cho usser" . $userID;
         $userInformation = User::where('User_ID','=',$userID)->get(['User_account','User_name','User_DoB','User_phone','User_image']);
         return response()->json(['information'=>$userInformation[0]],200);
     }

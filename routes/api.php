@@ -27,11 +27,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class , 'login']);
 Route::post('/register', [AuthController::class , 'register']);
-// Route::get('/check', [AuthController::class , 'check']);
+Route::get('/check', [AuthController::class , 'check']);
 
 
 //Router teacher manage
-Route::group(['prefix' => 'teacher'], function() {
+Route::group(['prefix' => 'teacher','middleware'=>['auth:api','teacher']], function() {
     Route::get('/general',[TeacherController::class,'tongQuan']);
     Route::get('/statistic/newStudent',[TeacherController::class,'newStudent']);
     Route::get('/statistic/topStudents',[TeacherController::class,'topStudents']);
@@ -70,7 +70,8 @@ Route::group(['prefix'=>'user','middleware'=>['auth:api','user']],function(){
     Route::post('/buyCourse',[CourseController::class,'buyCourse']);
     
 });
-Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'check']);
+Route::get('/getProfile',[UserController::class,'getProfile']);
+
 // Route::middleware('auth:api')->group(function(){
 //     Route::get('/auth',[AuthController::class,'check']);
 // });
