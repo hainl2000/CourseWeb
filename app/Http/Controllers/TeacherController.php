@@ -17,41 +17,37 @@ class TeacherController extends Controller
 
     public function tongQuan() {
 
-        $user = Auth::user()->id;
-        return response()->json([
-            $user
-        ],200);
 
-//        $courseTotal = User::find(3)->teacherCourse->count();
-//        $studentTotal = DB::select("SELECT COUNT(ce.User_ID) as total
-//                    FROM courseenrollment ce, course c
-//                    WHERE c.Author_ID = $user
-//                    AND ce.Course_ID = c.Course_ID
-//                    GROUP BY c.Author_ID");
-//
-//        $revune = DB::select(
-//            "SELECT SUM(p.Payment_price) as total
-//                    FROM courseenrollment ce, course c, paymenthistory p
-//                    WHERE c.Author_ID = $user
-//                    AND ce.Course_ID = c.Course_ID
-//                    AND ce.Payment_ID = p.Payment_ID
-//                    GROUP BY c.Author_ID"
-//                            );
-//        $payTotal = DB::select(
-//                "SELECT COUNT(ce.Payment_ID) as total
-//                FROM courseenrollment ce, course c
-//                WHERE c.Author_ID = $user
-//                AND ce.Course_ID = c.Course_ID
-//                GROUP BY c.Author_ID
-//                "
-//        );
-//        return response()->json(
-//            ['courseTotal' => !empty($courseTotal) ? $courseTotal : 0,
-//             'studentTotal' =>  !empty($studentTotal[0]->total) ? $studentTotal[0]->total : 0,
-//             'revune' => !empty($revune[0]->total) ? $revune[0]->total : 0,
-//             'payTotal' => !empty($payTotal[0]->total) ? $payTotal[0]->total : 0
-//                ],
-//            200);
+        $courseTotal = User::find(3)->teacherCourse->count();
+        $studentTotal = DB::select("SELECT COUNT(ce.User_ID) as total
+                    FROM courseenrollment ce, course c
+                    WHERE c.Author_ID = $user
+                    AND ce.Course_ID = c.Course_ID
+                    GROUP BY c.Author_ID");
+
+        $revune = DB::select(
+            "SELECT SUM(p.Payment_price) as total
+                    FROM courseenrollment ce, course c, paymenthistory p
+                    WHERE c.Author_ID = $user
+                    AND ce.Course_ID = c.Course_ID
+                    AND ce.Payment_ID = p.Payment_ID
+                    GROUP BY c.Author_ID"
+                            );
+        $payTotal = DB::select(
+                "SELECT COUNT(ce.Payment_ID) as total
+                FROM courseenrollment ce, course c
+                WHERE c.Author_ID = $user
+                AND ce.Course_ID = c.Course_ID
+                GROUP BY c.Author_ID
+                "
+        );
+        return response()->json(
+            ['courseTotal' => !empty($courseTotal) ? $courseTotal : 0,
+             'studentTotal' =>  !empty($studentTotal[0]->total) ? $studentTotal[0]->total : 0,
+             'revune' => !empty($revune[0]->total) ? $revune[0]->total : 0,
+             'payTotal' => !empty($payTotal[0]->total) ? $payTotal[0]->total : 0
+                ],
+            200);
     }
 
     public function newStudent () {
@@ -180,4 +176,6 @@ class TeacherController extends Controller
 
         return response()->json(!empty($value)? $value : [],200);
     }
+
+
 }

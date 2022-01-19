@@ -18,20 +18,27 @@ use App\Models\CourseTag;
 class CourseController extends Controller
 {
     //
-    public function addCourseTag(Request $request)
+    public function addCourseTag($courseID,$tags)
     {
-        $newCourseTag = new CourseTag;
-        $newCourseTag->Course_ID = $request->input('Course_ID');
-        $newCourseTag->Tag_ID = $request->input('Tag_ID');
-        $newCourseTag->save();
+        // echo $tags;
+        foreach($tags as $tag)
+        {
+
+            $newCourseTag = new CourseTag;
+            $newCourseTag->Course_ID = $courseID;
+            $newCourseTag->Tag_ID = $tag;
+            $newCourseTag->save();
+        }
         // echo $newCourse;
-        return response()->json(['status'=>'Add Course Successfully'],201);
+        // return response()->json(['status'=>'Add Course Successfully'],201);
     }
 
     public function addCourse(Request $request)
     {
         $newCourse = new Course;
-        $newCourse->Author_ID = $request->input('Author_ID');
+        $authorID = $request->get('Teacher_ID');
+        $newCourse->Author_ID = $authorID;
+        // $newCourse->Author_ID = $request->input('Author_ID');
         $newCourse->Course_header = $request->input('Course_header');
         $newCourse->Course_description = $request->input('Course_description');
         $newCourse->Course_price = $request->input('Course_price');
@@ -39,7 +46,8 @@ class CourseController extends Controller
         $newCourse->Course_category = $request->input('Course_category');
         // $newCourse->course_rate = 0;
         $newCourse->save();
-        echo $newCourse;
+        self::addCourseTag($newCourse->Course_ID,$request->input('Course_tags'));
+        // echo $newCourse;
         return response()->json(['status'=>'Add Course Successfully','courseID' => $newCourse->Course_ID],201);
     }
 
@@ -54,14 +62,15 @@ class CourseController extends Controller
         $newLesson->Lesson_isFree = $request->input('Lesson_isFree');
         $newLesson->Lesson_view = 0;
         $newLesson->save();
-        return response()->json(['status'=>'Add Lesson Successfully'],201);
+        // echo $newLesson;
+        return response()->json(['status'=>'Add Lesson Successfully','LessonID'=> $newLesson->lesson_ID],201);
     }
 
     public function addChap(Request $request)
     {
         $newChap = new Chap;
         $newChap->Course_ID = $request->input('Course_ID');
-        $newChap->Chap_ID = $request->input('Chap_description');
+        $newChap->Chap_description = $request->input('Chap_description');
         $newChap->save();
         return response()->json(['status'=>'Add Chap Successfully','chapID' => $newChap->Chap_ID],201);
     }
@@ -99,6 +108,14 @@ class CourseController extends Controller
         return response()->json(['message' => 'Succesfully'],200);
     }
 
+    public function refuseCourse(Request $request)
+    {
+        $refuseCourse = $request->input('Course_ID');
+        Course::where('Course_ID','=', $refuseCourse)->update(['Course_approve' => '2']);
+
+        return response()->json(['message' => 'Succesfully'],200);
+    }
+
     public function buyCourse(Request $request)
     {
         $course_ID = $request->input('Course_ID');
@@ -116,7 +133,7 @@ class CourseController extends Controller
         $newEnrollment->Payment_ID = $newPayment->Payment_ID;
         $newEnrollment->Payment_date = now();
         $newEnrollment->save();
-        return response()->json(['message' => 'Succesfully'],201);
+        return response()->json(['message' => 'Buy Succesfully'],201);
     }
 
     public function getBoughtCourses(Request $request)
@@ -198,21 +215,21 @@ class CourseController extends Controller
         return $lists;
     }
 
-
-
-
-    public function getCourseDetail(Request $request)
+    public function getCourseDetailsForStudent(Request $request)
     {
         // echo $request;
-        $user = Auth::user();
+
+        $userID = Auth::id();
         // dd($user);
         // $user = auth()->user();
         $course_ID = $request->route('courseID');
-        if($user)
+        if($userID)
         {
-            $user_ID = $user->User_ID;
-            $isEnroll = CourseEnrollment::where('Course_ID','=',$course_ID)->where('User_ID','=',$user_ID)->first();
-            echo "ngu ngoc" .$isEnroll;
+            // echo "id " . $userID;
+            // echo "course" . $course_ID;
+            // $user_ID = $user->User_ID;
+            $isEnroll = CourseEnrollment::where('Course_ID','=',$course_ID)->where('User_ID','=',$userID)->first();
+            // echo "ngu ngoc" .$isEnroll;
             if($isEnroll)
             {
 
@@ -224,11 +241,20 @@ class CourseController extends Controller
         return response()->json($course,200);
     }
 
+    public function getCourseDetail(Request $request)
+    {
+        $course_ID = $request->route('courseID');
+        $course = self::getFullInforCourse($course_ID);
+        return response()->json($course,200);
+    }
+
     public function updateCourseRate(Request $request)
     {
         $comment = new Comment;
+        $userID = $request->get('ID');
         $comment->Comment_content = $request->input('Comment_content');
-        $comment->Comment_by = $request->input('User_ID');
+        // $comment->Comment_by = $request->input('User_ID');
+        $comment->Comment_by = $userID;
         $comment->Comment_in = $request->input('Course_ID');
         $comment->User_rate = $request->input('User_rate');
         $comment->Comment_at = now();
@@ -240,19 +266,19 @@ class CourseController extends Controller
         return response()->json(['message' => 'Succesfully'],201);
     }
 
-    public function showComment(Request $request)
-    {
-        $listsComment = array();
-        $Course_ID = $request->input('Course_ID');
-        $Comments_in_course = Comment::where('Comment_in','=',$Course_ID)->get();
-        foreach($Comments_in_course as $comment)
-        {
-            $user = User::where('User_ID','=',$comment->Comment_by)->get(['User_name']);
-            $list =  array('comment' =>$comment , 'name' => ($user[0]->User_name));
-            array_push($listsComment,$list);
-        }
-        return response()->json($listsComment,201);
-    }
+    // public function showComment(Request $request)
+    // {
+    //     $listsComment = array();
+    //     $Course_ID = $request->input('Course_ID');
+    //     $Comments_in_course = Comment::where('Comment_in','=',$Course_ID)->get();
+    //     foreach($Comments_in_course as $comment)
+    //     {
+    //         $user = User::where('User_ID','=',$comment->Comment_by)->get(['User_name']);
+    //         $list =  array('comment' =>$comment , 'name' => ($user[0]->User_name));
+    //         array_push($listsComment,$list);
+    //     }
+    //     return response()->json($listsComment,201);
+    // }
 
     public function getListCoursesByCategory(Request $request)
     {
@@ -291,7 +317,8 @@ class CourseController extends Controller
     public function getListUploadedCourses(Request $request)
     {
 
-        $authorID = $request->route('authorID');
+        $authorID = $request->get('Teacher_ID');
+        // $authorID = $request->route('authorID');
         // echo 'tac gia' . $authorID;
         $listCourses = Course::where('Author_ID','=',$authorID)->get(['Course_ID','Course_header','Course_rate','Course_image']);
         ;

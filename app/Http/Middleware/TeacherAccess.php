@@ -22,7 +22,7 @@ class TeacherAccess
         {
             if($user->User_role == 1)
             {   
-                // $request->attributes->add(['ID'=>$user->User_ID]);
+                $request->attributes->add(['Teacher_ID'=>$user->User_ID]);
                 return $next($request);
             }
             return response()->json(['message'=>'Dang nhap bang tk teacher di'],403);

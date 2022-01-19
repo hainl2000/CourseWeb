@@ -12,8 +12,15 @@ class CommentController extends Controller
     //
     public function showComment(Request $request)
     {
-        $Course_ID = $request->input('Course_ID');
-        $Comment_in_course = Comment::where('Course_ID','=',$Course_ID)->get();
-        return response()->json([$Comment_in_course],201);
+        $listsComment = array();
+        $Course_ID = $request->route('courseID');
+        $Comments_in_course = Comment::where('Comment_in','=',$Course_ID)->get();
+        foreach($Comments_in_course as $comment)
+        {
+            $user = User::where('User_ID','=',$comment->Comment_by)->get(['User_name']);
+            $list =  array('comment' =>$comment , 'name' => ($user[0]->User_name));
+            array_push($listsComment,$list);
+        }
+        return response()->json($listsComment,201);
     }
 }
