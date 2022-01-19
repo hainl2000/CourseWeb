@@ -64,10 +64,12 @@ Route::group(['prefix' => 'admin', 'middleware'=>['auth:api','admin']],function(
 });
 
 Route::group(['prefix'=>'user','middleware'=>['auth:api','user']],function(){
+    Route::get('/getBoughtCourses',[CourseController::class,'getBoughtCourses']);
     Route::get('/getProfile',[UserController::class,'getProfile']);
     Route::put('/updateProfile',[UserController::class,'updateProfile']);
+    Route::post('/buyCourse',[CourseController::class,'buyCourse']);
+    
 });
-
 Route::middleware('auth:api')->get('/getUserDetail',[AuthController::class,'check']);
 // Route::middleware('auth:api')->group(function(){
 //     Route::get('/auth',[AuthController::class,'check']);
@@ -84,3 +86,4 @@ Route::get('/newCourse', [CourseController::class, 'newCourse']);
 Route::get('/topTeacher', [AdminController::class, 'topTeacher']);
 Route::get('/getCategoryByTag/{Tag_ID}',[CategoryController::class,'getCategoryByTag']);
 Route::get('/getListCoursesByCategory/{categoryID}',[CourseController::class,'getListCoursesByCategory']);
+Route::get('/getCategoryById/{categoryID}',[CategoryController::class,'getCategoryById']);

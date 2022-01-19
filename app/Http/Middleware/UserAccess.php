@@ -17,7 +17,8 @@ class UserAccess
     public function handle(Request $request, Closure $next)
     {   
         $user = Auth::user();
-        // echo $user;
+        // $id = Auth::id();
+        // echo $id;
         if($user)
         {
             if($user->User_role == 2)
