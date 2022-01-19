@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class , 'login']);
 Route::post('/register', [AuthController::class , 'register']);
-Route::get('/check', [AuthController::class , 'check']);
+// Route::get('/check', [AuthController::class , 'check']);
 
 
 //Router teacher manage
@@ -55,6 +55,7 @@ Route::group(['prefix' => 'teacher','middleware'=>['auth:api','teacher']], funct
 Route::group(['prefix' => 'admin', 'middleware'=>['auth:api','admin']],function(){
     Route::get('/getPendingCourses',[CourseController::class,'getPendingCourses']);
     Route::post('/approveCourse',[CourseController::class,'approveCourse']);
+    Route::post('/refuseCourse',[CourseController::class,'refuseCourse']);
     Route::get('/listTeacher', [AdminController::class, 'listTeacher']);
     Route::get('/listStudent', [AdminController::class, 'listStudent']);
     Route::get('/general', [AdminController::class,'general']);
@@ -70,7 +71,7 @@ Route::group(['prefix'=>'user','middleware'=>['auth:api','user']],function(){
     Route::post('/buyCourse',[CourseController::class,'buyCourse']);
     
 });
-Route::get('/getProfile',[UserController::class,'getProfile']);
+// Route::get('/getProfile',[UserController::class,'getProfile'])->middleware('auth:api');
 
 // Route::middleware('auth:api')->group(function(){
 //     Route::get('/auth',[AuthController::class,'check']);
@@ -89,3 +90,4 @@ Route::get('/getCategoryByTag/{Tag_ID}',[CategoryController::class,'getCategoryB
 Route::get('/getListCoursesByCategory/{categoryID}',[CourseController::class,'getListCoursesByCategory']);
 Route::get('/getCategoryById/{categoryID}',[CategoryController::class,'getCategoryById']);
 Route::get('/getListCoursesByTag/{tagID}',[CourseController::class,'getListCoursesByTag']);
+Route::Get('/getUserDetails',[AuthController::class,'getUserDetails'])->middleware('auth:api');

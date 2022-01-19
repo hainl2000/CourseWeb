@@ -133,7 +133,7 @@ class CourseController extends Controller
         $newEnrollment->Payment_ID = $newPayment->Payment_ID;
         $newEnrollment->Payment_date = now();
         $newEnrollment->save();
-        return response()->json(['message' => 'Succesfully'],201);
+        return response()->json(['message' => 'Buy Succesfully'],201);
     }
 
     public function getBoughtCourses(Request $request)
@@ -239,7 +239,7 @@ class CourseController extends Controller
         return response()->json($course,200);
     }
 
-    public function getaCourseDetail(Request $request)
+    public function getCourseDetail(Request $request)
     {
         $course_ID = $request->route('courseID');
         $course = self::getFullInforCourse($course_ID);
