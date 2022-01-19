@@ -90,3 +90,5 @@ Route::get('/getListCoursesByCategory/{categoryID}',[CourseController::class,'ge
 
 Route::get('/getCategoryById/{categoryID}',[CategoryController::class,'getCategoryById']);
 Route::get('/getListCoursesByTag/{tagID}',[CourseController::class,'getListCoursesByTag']);
+Route::get('/statistic/listStudent',[TeacherController::class,'listStudent']);
+Route::get('/statistic/topStudents',[TeacherController::class,'topStudents']);

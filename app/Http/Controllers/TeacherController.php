@@ -82,16 +82,14 @@ class TeacherController extends Controller
     public function topStudents () {
         $value = DB::select('SELECT ce.User_ID , u.User_name username,  COUNT(p.Payment_ID) "order", SUM(p.Payment_price) price
                 FROM courseenrollment ce, course c, paymenthistory p, user u
-                WHERE c.Author_ID = 0
+                WHERE c.Author_ID = 3
                 AND ce.Course_ID = c.Course_ID
                 AND ce.Payment_ID = p.Payment_ID
                 AND ce.User_ID = u.User_ID
                 GROUP BY ce.User_ID, u.User_name
                 ORDER BY COUNT(p.Payment_ID) DESC');
 
-        return response()->json([
-            !empty($value[0])? $value[0] : []
-        ],200);
+        return response()->json(!empty($value[0])? $value[0] : [],200);
 
     }
 
@@ -104,9 +102,7 @@ class TeacherController extends Controller
             AND ce.User_ID = u.User_ID
             ORDER BY Payment_date ASC');
 
-        return response()->json([
-            !empty($value[0])? $value[0] : []
-        ],200);
+        return response()->json(!empty($value[0])? $value[0] : [],200);
     }
 
     public function listStudent () {
@@ -118,9 +114,7 @@ class TeacherController extends Controller
                 AND ce.Payment_ID = p.Payment_ID
                 GROUP BY c.Author_ID, u.User_ID, ce.User_ID, u.User_name, u.User_phone, u.User_account');
 
-        return response()->json([
-            !empty($value[0])? $value[0] : []
-        ],200);
+        return response()->json(!empty($value[0])? $value[0] : [],200);
     }
 
     public function listCoures () {
@@ -131,9 +125,7 @@ class TeacherController extends Controller
             $value[$i]->students  = CourseEnrollment::where('Course_ID',$value[$i]->Course_ID)->count();
         }
 
-        return response()->json([
-            !empty($value)? $value : []
-        ],200);
+        return response()->json(!empty($value)? $value : [],200);
     }
 
     public function updateInforTeacher(Request $request)
@@ -164,8 +156,6 @@ class TeacherController extends Controller
         ');
 
 
-        return response()->json([
-            !empty($value)? $value : []
-        ],200);
+        return response()->json(!empty($value)? $value : [],200);
     }
 }
