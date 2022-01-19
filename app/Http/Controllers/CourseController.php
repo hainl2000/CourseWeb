@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Support\Jsonable;
+
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\User;
@@ -101,7 +103,8 @@ class CourseController extends Controller
     {
         $course_ID = $request->input('Course_ID');
         // echo $course_ID;
-        $user_ID = $request->input('User_ID');
+        // $user_ID = $request->input('User_ID');
+        $user_ID = $request->get('ID');
         $newPayment = new PaymentHistory;
         $course_price = course::where('Course_ID','=',$course_ID)->get(['Course_price']);
         $newPayment->Payment_price = $course_price[0]->Course_price;
@@ -118,7 +121,8 @@ class CourseController extends Controller
 
     public function getBoughtCourses(Request $request)
     {
-        $user_ID = $request->input('User_ID');
+        // $user_ID = $request->input('User_ID');
+        $user_ID = $request->get('ID');
         $lists = array();
         $listsBoughtCourse = CourseEnrollment::where('User_ID','=',$user_ID)->get(['Course_ID']);
         foreach($listsBoughtCourse as $course)
@@ -165,14 +169,59 @@ class CourseController extends Controller
         return $lists;
     }
 
+    protected function getInforTrialCourse($courseID)
+    {
+        $lists = array();
+        $course = Course::where('Course_ID','=',$courseID)->get();
+        $authorName = User::where('User_ID','=',$course[0]->Author_ID)->pluck('User_name');
+        $course[0]->{'teacherName'} = $authorName[0];
+        array_push($lists,$course[0]);
+        $totalStudent = CourseEnrollment::where('Course_ID' , '=',$courseID)->count();
+        $lists[0]->{'totalStudent'} = $totalStudent;
+        $courseTags = CourseTag::where('Course_ID','=',$courseID)->pluck('Tag_ID');
+        // array_insert($lists,$lists[0]->Course_category,$courseTags);
+        // $lists[0]->Course_category->{'Tag'} = $courseTags;
+        // $lists[1]->{'tag'} = $courseTag;
+        array_push($lists,$courseTags);
+        $listChaps = Chap::where('Course_ID','=',$courseID)->get(['Chap_ID','Chap_description']);
+        $listLessons = array();
+        foreach($listChaps as $chap)
+        {
+            // echo $chap;
+            // echo $chap->Chap_ID;
+            $lesson = Lesson::where('Chap_ID','=',$chap->Chap_ID)->where('Lesson_isFree','=',1)->get(['Lesson_header','Lesson_description','Lesson_video','Lesson_view']);
+            $list = array('chap' =>$chap,'lesson' => $lesson);
+
+            array_push($listLessons,$list);
+        }
+        array_push($lists,$listLessons);
+        return $lists;
+    }
+
 
 
 
     public function getCourseDetail(Request $request)
     {
         // echo $request;
-
-        $course = self::getFullInforCourse($request->route('courseID'));
+        $user = Auth::user();
+        echo "con cho ngu hoc" . $user;
+        // dd($user);
+        // $user = auth()->user();
+        $course_ID = $request->route('courseID');
+        if($user)
+        {   
+            $user_ID = $user->User_ID;
+            $isEnroll = CourseEnrollment::where('Course_ID','=',$course_ID)->where('User_ID','=',$user_ID)->first();
+            echo "ngu ngoc" .$isEnroll;
+            if($isEnroll)
+            {   
+                
+                $course = self::getFullInforCourse($course_ID);
+                return response()->json($course,200);
+            }
+        }
+        $course = self::getInforTrialCourse($course_ID);
         return response()->json($course,200);
     }
 
