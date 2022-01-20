@@ -129,7 +129,7 @@ class TeacherController extends Controller
                 AND ce.Payment_ID = p.Payment_ID
                 GROUP BY c.Author_ID, u.User_ID, ce.User_ID, u.User_name, u.User_phone, u.User_account");
 
-        return response()->json(!empty($value[0])? $value[0] : [],200);
+        return response()->json(!empty($value)? $value : [],200);
     }
 
     public function listCoures () {
