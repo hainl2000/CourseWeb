@@ -100,7 +100,7 @@ class TeacherController extends Controller
                 GROUP BY ce.User_ID, u.User_name
                 ORDER BY COUNT(p.Payment_ID) DESC");
 
-        return response()->json(!empty($value[0])? $value[0] : [],200);
+        return response()->json(!empty($value)? $value : [],200);
 
     }
 
