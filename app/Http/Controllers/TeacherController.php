@@ -169,5 +169,13 @@ class TeacherController extends Controller
         ],200);
     }
 
+
+        public function getTeacherInformation(Request $request)
+    {   
+        $teacherID = $request->route('teacherID');
+        $teacherInformation = TeacherInformation::where('Teacher_ID','=',$teacherID)->first();
+        return response()->json($teacherInformation,200);
+    }
+
     
 }

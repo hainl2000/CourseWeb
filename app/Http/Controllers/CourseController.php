@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Support\Jsonable;
@@ -161,8 +162,10 @@ class CourseController extends Controller
     {
         $lists = array();
         $course = Course::where('Course_ID','=',$courseID)->get();
-        $authorName = User::where('User_ID','=',$course[0]->Author_ID)->pluck('User_name');
-        $course[0]->{'teacherName'} = $authorName[0];
+                $author = User::where('User_ID','=',$course[0]->Author_ID)->get(['User_name','User_image']);
+        // echo $author;
+        $course[0]->{'teacherName'} = $author[0]->User_name;
+        $course[0]->{'teacherImage'} = $author[0]->User_image;
         array_push($lists,$course[0]);
         $totalStudent = CourseEnrollment::where('Course_ID' , '=',$courseID)->count();
         $lists[0]->{'totalStudent'} = $totalStudent;
@@ -190,8 +193,12 @@ class CourseController extends Controller
     {
         $lists = array();
         $course = Course::where('Course_ID','=',$courseID)->get();
-        $authorName = User::where('User_ID','=',$course[0]->Author_ID)->pluck('User_name');
-        $course[0]->{'teacherName'} = $authorName[0];
+                $category = Category::where('Category_ID','=',$course[0]->Course_category)->first();
+        $course[0]->{'categoryName'} = $category->Category_name;
+                $author = User::where('User_ID','=',$course[0]->Author_ID)->get(['User_name','User_image']);
+        // echo $author;
+        $course[0]->{'teacherName'} = $author[0]->User_name;
+        $course[0]->{'teacherImage'} = $author[0]->User_image;
         array_push($lists,$course[0]);
         $totalStudent = CourseEnrollment::where('Course_ID' , '=',$courseID)->count();
         $lists[0]->{'totalStudent'} = $totalStudent;
@@ -202,8 +209,11 @@ class CourseController extends Controller
         array_push($lists,$courseTags);
         $listChaps = Chap::where('Course_ID','=',$courseID)->get(['Chap_ID','Chap_description']);
         $listLessons = array();
+        $totalLessons = 0;
         foreach($listChaps as $chap)
         {
+            $totalLessons += Lesson::where('Chap_ID','=',$chap->Chap_ID)->count();
+
             // echo $chap;
             // echo $chap->Chap_ID;
             $lesson = Lesson::where('Chap_ID','=',$chap->Chap_ID)->where('Lesson_isFree','=',1)->get(['Lesson_header','Lesson_description','Lesson_video','Lesson_view']);
@@ -211,6 +221,7 @@ class CourseController extends Controller
 
             array_push($listLessons,$list);
         }
+        $lists[0]->{"totalLessons"} = $totalLessons;
         array_push($lists,$listLessons);
         return $lists;
     }
@@ -398,6 +409,29 @@ class CourseController extends Controller
         }
 
         return response()->json($value,200);
+    }
+
+    public function getTrialForGuest(Request $request)
+    {   
+        $course_ID = $request->route('courseID');
+        $course = self::getInforTrialCourse($course_ID);
+        return response()->json($course,200);
+    }
+
+    public function getListCoursesOfTeacher(Request $request)
+    {   
+        $lists = array();
+        $teacherID = $request->route('teacherID');
+        // echo $teacherID;
+        $listCourses = Course::where('Author_ID','=',$teacherID)->get();
+        // echo $listCourses->get();
+        foreach($listCourses as $course)
+        {   
+            // echo $course;
+            array_push($lists,self::getShortInforCourse($course->Course_ID));
+        }
+
+        return response()->json($lists,200);
     }
 
 }
