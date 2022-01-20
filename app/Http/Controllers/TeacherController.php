@@ -21,7 +21,7 @@ class TeacherController extends Controller
         $courseTotal = User::find($user)
             ->where("User_ID", $user)
             ->join('course','course.Author_id', "user.User_ID")->count();
-        $studentTotal = DB::select("SELECT COUNT(ce.User_ID) as total
+        $studentTotal = DB::select("SELECT COUNT(distinct ce.User_ID) as total
                     FROM courseenrollment ce, course c
                     WHERE c.Author_ID = $user
                     AND ce.Course_ID = c.Course_ID
