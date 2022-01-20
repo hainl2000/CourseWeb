@@ -380,8 +380,7 @@ class CourseController extends Controller
 
     public function topCourse() {
 
-        $value = Course::all()
-            ->where('Course_approve','1');
+        $value = Course::where('Course_approve','1')->get();
 
         for ($i = 0; $i < count($value); ++$i) {
             $value[$i]->count = CourseEnrollment::where('Course_ID', $value[$i]->Course_ID)->count();
