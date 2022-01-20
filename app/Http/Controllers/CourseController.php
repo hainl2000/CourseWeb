@@ -293,7 +293,8 @@ class CourseController extends Controller
 
     public function getListCoursesByCategory(Request $request)
     {
-        $listCourses = Course::where('Course_category','=',$request->route('categoryID'))->paginate(3);
+        $listCourses = Course::where('Course_category','=',$request->route('categoryID'))
+            ->where('Course_approve','1')->paginate(3);
         $total =  $listCourses->lastPage();
         $current = $listCourses->currentPage();
         $currentList = $listCourses->items();
@@ -308,7 +309,9 @@ class CourseController extends Controller
     public function getListCoursesByTag(Request $request)
     {
         $currentList = array();
-        $lists = CourseTag::where('Tag_ID','=',$request->route('tagID'))->pluck('Course_ID');
+        $lists = CourseTag::where('Tag_ID','=',$request->route('tagID'))
+            ->where('Course_approve','1')
+            ->pluck('Course_ID');
         // echo count($lists);
         foreach($lists as $course_id)
         {
@@ -377,7 +380,8 @@ class CourseController extends Controller
 
     public function topCourse() {
 
-        $value = Course::all();
+        $value = Course::all()
+            ->where('Course_approve','1');
 
         for ($i = 0; $i < count($value); ++$i) {
             $value[$i]->count = CourseEnrollment::where('Course_ID', $value[$i]->Course_ID)->count();
@@ -399,7 +403,8 @@ class CourseController extends Controller
     }
 
     public function newCourse () {
-        $value = Course::orderBy('Course_createdAt', 'DESC')->get();
+        $value = Course::where('Course_approve','1')
+        ->orderBy('Course_createdAt', 'DESC')->get();
 
         for ($i = 0; $i < count($value); ++$i) {
             $value[$i]->count = CourseEnrollment::where('Course_ID', $value[$i]->Course_ID)->count();
@@ -413,21 +418,22 @@ class CourseController extends Controller
     }
 
     public function getTrialForGuest(Request $request)
-    {   
+    {
         $course_ID = $request->route('courseID');
         $course = self::getInforTrialCourse($course_ID);
         return response()->json($course,200);
     }
 
     public function getListCoursesOfTeacher(Request $request)
-    {   
+    {
         $lists = array();
         $teacherID = $request->route('teacherID');
         // echo $teacherID;
-        $listCourses = Course::where('Author_ID','=',$teacherID)->get();
+        $listCourses = Course::where('Author_ID','=',$teacherID)
+            ->where('Course_approve','1')->get();
         // echo $listCourses->get();
         foreach($listCourses as $course)
-        {   
+        {
             // echo $course;
             array_push($lists,self::getShortInforCourse($course->Course_ID));
         }
