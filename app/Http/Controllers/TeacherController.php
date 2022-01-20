@@ -116,7 +116,7 @@ class TeacherController extends Controller
             AND ce.User_ID = u.User_ID
             ORDER BY Payment_date ASC");
 
-        return response()->json(!empty($value[0])? $value[0] : [],200);
+        return response()->json(!empty($value)? $value : [],200);
     }
 
     public function listStudent () {
