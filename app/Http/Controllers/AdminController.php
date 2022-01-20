@@ -15,21 +15,25 @@ class AdminController extends Controller
     //
     public function listTeacher () {
 
-        $value = DB::select('SELECT u.User_ID, u.User_name,User_account ,User_phone,COUNT(c.Course_ID) count
-            FROM user u, course c
-            WHERE u.User_role = 1
-            AND u.User_ID = c.Author_ID
-            GROUP BY u.User_ID, u.User_name, User_phone,User_account');
+        $teacher = User::where('User_role','1')->get();
+//
+//        $value = DB::select('SELECT u.User_ID, u.User_name,User_account ,User_phone,COUNT(c.Course_ID) count
+//            FROM user u, course c
+//            WHERE u.User_role = 1
+//            AND u.User_ID = c.Author_ID
+//            GROUP BY u.User_ID, u.User_name, User_phone,User_account');
 
-        for ($i = 0; $i < count($value) ; ++$i) {
-            $value[$i]->total = (int) DB::table('paymenthistory')
+        for ($i = 0; $i < count($teacher) ; ++$i) {
+            $teacher[$i]->total = (int) DB::table('paymenthistory')
                 ->join('courseenrollment', 'courseenrollment.Payment_ID', 'paymenthistory.Payment_ID')
                 ->join('course', 'courseenrollment.Course_ID', 'course.Course_ID')
-                -> where('Author_ID', $value[$i]->User_ID)->sum('Payment_price');
+                -> where('Author_ID', $teacher[$i]->User_ID)->sum('Payment_price');
 
+            $teacher[$i]->count = (int) DB::table('course')
+                ->where('Author_ID',$teacher->User_ID)->count();
         }
 
-        return response()->json($value,200);
+        return response()->json($teacher,200);
     }
 
     public function listStudent () {
