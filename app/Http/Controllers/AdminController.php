@@ -30,7 +30,7 @@ class AdminController extends Controller
                 -> where('Author_ID', $teacher[$i]->User_ID)->sum('Payment_price');
 
             $teacher[$i]->count = (int) DB::table('course')
-                ->where('Author_ID',$teacher->User_ID)->count();
+                ->where('Author_ID',$teacher[$i]->User_ID)->count();
         }
 
         return response()->json($teacher,200);
