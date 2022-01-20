@@ -101,4 +101,9 @@ Route::group(['middleware'=>['auth:api']],function(){
     Route::get('/getCourseDetailsForStudent/{courseID}',[CourseController::class,'getCourseDetailsForStudent']);
 });
 
+
+Route::get('/getTeacherInformation/{teacherID}',[TeacherController::class,'getTeacherInformation']);
+Route::get('/getTrialForGuest/{courseID}',[CourseController::class,'getTrialForGuest']);
+Route::get('/getListCoursesOfTeacher/{teacherID}',[CourseController::class,'getListCoursesOfTeacher']);
+
 Route::get('/showComment/{courseID}',[CommentController::class,'showComment']);
